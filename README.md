@@ -30,6 +30,8 @@ const alice = users.fetch(2)
 
 const bobUndtAlice = await Promise.all([bob, alice])
 
+fetchCalls === 1
+
 await delay(100)
 
 /**
