@@ -12,7 +12,7 @@
   "packageManager": "yarn@3.3.1",
   "scripts": {
     "test": "vitest",
-    "build": "¤ echo build step not implemented"
+    "build": "echo ¤ build step not implemented"
   },
   "devDependencies": {
     "vitest": "^0.26.2"
