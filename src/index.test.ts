@@ -1,0 +1,126 @@
+import { assert, expect, test, describe } from 'vitest'
+import { setTimeout as setTimeoutP } from "timers/promises"
+import { Batcher, bufferScheduler, windowScheduler } from "./index"
+
+// Edit an assertion and save to see HMR in action
+
+const data = [
+  { id: 1, name: "foo" },
+  { id: 2, name: "bar" },
+  { id: 3, name: "lorem" },
+  { id: 4, name: "ipsum" },
+  { id: 5, name: "foobar" }
+]
+
+describe("batcher", () => {
+  test('fetching items should work', async () => {
+    const batcher = Batcher<{ id: number, name: string }, "id">({
+      idKey: "id",
+      fetcher: async (ids) => {
+        return Object.values(data).filter((item) => ids.includes(item.id))
+      },
+    })
+
+    const two = await batcher.get(2)
+
+    expect(two).toEqual({ id: 2, name: "bar" })
+
+    const all = await Promise.all([
+      batcher.get(1), batcher.get(2), batcher.get(3), batcher.get(4), batcher.get(5)
+    ])
+
+    expect(all).toEqual(data)
+  })
+
+  test('fetching items be batched in the same time window', async () => {
+    let fetchCounter = 0
+
+    const batcher = Batcher<{ id: number, name: string }, "id">({
+      idKey: "id",
+      fetcher: async (ids) => {
+        fetchCounter++
+        return Object.values(data).filter((item) => ids.includes(item.id))
+      },
+    })
+
+    const twoItemsR = Promise.all([
+      batcher.get(2), batcher.get(5)
+    ])
+
+    await setTimeoutP(30)
+
+    const allR = Promise.all([
+      batcher.get(1), batcher.get(2), batcher.get(3), batcher.get(4), batcher.get(5)
+    ])
+
+    const [twoItems, all] = await Promise.all([twoItemsR, allR])
+
+    expect(twoItems).toEqual([
+      { id: 2, name: "bar" },
+      { id: 5, name: "foobar" }
+    ])
+
+    expect(all).toEqual(data)
+
+    expect(fetchCounter).toBe(2)
+  })
+
+  test("windowing", async () => {
+    let fetchCounter = 0
+    const batcher = Batcher<{ id: number, name: string }, "id">({
+      idKey: "id",
+      fetcher: async (ids) => {
+        fetchCounter++
+        return Object.values(data).filter((item) => ids.includes(item.id))
+      },
+      scheduler: windowScheduler(10)
+    })
+    const one = batcher.get(1)
+    await setTimeoutP(2)
+    const two = batcher.get(2)
+    await setTimeoutP(3)
+    const three = batcher.get(3)
+    await setTimeoutP(5)
+    const four = batcher.get(4)
+
+    const all = await Promise.all([one, two, three, four])
+
+    expect(fetchCounter).toBe(2)
+    expect(all).toEqual([
+      { id: 1, name: "foo" },
+      { id: 2, name: "bar" },
+      { id: 3, name: "lorem" },
+      { id: 4, name: "ipsum" }
+    ])
+  })
+
+  test("debouncing", async () => {
+    let fetchCounter = 0
+    const batcher = Batcher<{ id: number, name: string }, "id">({
+      idKey: "id",
+      fetcher: async (ids) => {
+        fetchCounter++
+        return Object.values(data).filter((item) => ids.includes(item.id))
+      },
+      scheduler: bufferScheduler(10)
+    })
+
+    const one = batcher.get(1)
+    await setTimeoutP(2)
+    const two = batcher.get(2)
+    await setTimeoutP(3)
+    const three = batcher.get(3)
+    await setTimeoutP(5)
+    const four = batcher.get(4)
+
+    const all = await Promise.all([one, two, three, four])
+
+    expect(fetchCounter).toBe(1)
+    expect(all).toEqual([
+      { id: 1, name: "foo" },
+      { id: 2, name: "bar" },
+      { id: 3, name: "lorem" },
+      { id: 4, name: "ipsum" }
+    ])
+  })
+})
