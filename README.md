@@ -48,10 +48,19 @@ fetchCalls === 2
 
 ## React(query) Example
 
-Using the same users manager in the above example.
-
 ```ts
 import { useQuery } from "react-query"
+import { Batcher, windowScheduler } from "@yornaath/batshit"
+
+const users = Batcher<User, number>({
+  fetcher: async (ids) => {
+    return client.users.where({
+      userId_in: ids
+    })
+  },
+  equality: "id",
+  scheduler: windowScheduler(10)
+})
 
 const useUser = (id: number) => {
   return useQuery([ "users", id ], async () => {
