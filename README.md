@@ -5,7 +5,7 @@ A batch manager that will batch requests for a certain data type within a given 
 ## Quickstart
 
 ```ts
-import {Batcher, windowScheduler} from "batshit"
+import { Batcher, windowScheduler } from "batshit"
 
 let fetchCalls = 0
 
@@ -38,7 +38,7 @@ await delay(100)
 const joe = users.get(3)
 const margareth = users.get(4)
 
-const joeUndtMargareth = await Promise.all([joe, margareth])
+const joeUndtMargareth = await Promise.all([ joe, margareth ])
 
 fetchCalls === 2
 
@@ -49,10 +49,10 @@ fetchCalls === 2
 Using the same users manager in the above example.
 
 ```ts
-import {useQuery} from "react-query"
+import { useQuery } from "react-query"
 
 const useUser = (id: number) => {
-  return useQuery(["users", id], async () => {
+  return useQuery([ "users", id ], async () => {
     return users.get(id)
   })
 }
