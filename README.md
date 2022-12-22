@@ -11,14 +11,14 @@ let fetchCalls = 0
 
 type User = { id: number, name: string }
 
-const users = Batcher<User, "id">({
-  idKey: "id",
+const users = Batcher<User, number>({
   fetcher: async (ids) => {
     fetchCalls++
     return client.users.where({
       userId_in: ids
     })
   },
+  equality: "id",
   scheduler: windowScheduler(10) // Default and can be omitted.
 })
 
