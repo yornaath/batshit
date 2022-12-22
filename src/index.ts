@@ -44,7 +44,7 @@ export type BatcherConfig<T, Q> = {
    * @param query Q
    * @returns string
    */
-  queryHasher?: (query: Q) => string
+  equality: (item:T, query: Q) => boolean
 }
 
 /**
@@ -60,6 +60,9 @@ export type BatcherScheduler = {
    */
   (start: number, latest: number): number
 }
+
+export const keyEquality = <T, Q>(id: keyof T) => (item:T, query: Q) => 
+  item[id] === query
 
 /**
  * Give a window in ms where all queued fetched made within the window will be batched into
@@ -121,14 +124,7 @@ export const Batcher = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
       latest = null
     }, scheduler(start, latest))
 
-    const index = [...batch].findIndex(q => {
-      if(config.queryHasher) {
-        return config.queryHasher(q) === config.queryHasher(query)
-      }
-      return q === query
-    })
-
-    return currentRequest.value.then(data => data[index])
+    return currentRequest.value.then(data => data.find(item => config.equality(item, query)) as T)
   }
 
   return { fetch }

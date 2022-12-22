@@ -1,6 +1,6 @@
 import { assert, expect, test, describe } from 'vitest'
 import { setTimeout as setTimeoutP } from "timers/promises"
-import { Batcher, bufferScheduler, windowScheduler } from "./index"
+import { Batcher, bufferScheduler, keyEquality, windowScheduler } from "./index"
 
 // Edit an assertion and save to see HMR in action
 
@@ -18,6 +18,7 @@ describe("batcher", () => {
       fetcher: async (ids) => {
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
+      equality: keyEquality("id")
     })
 
     const two = await batcher.fetch(2)
@@ -39,6 +40,7 @@ describe("batcher", () => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
+      equality: keyEquality("id")
     })
 
     const twoItemsR = Promise.all([
@@ -70,6 +72,7 @@ describe("batcher", () => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
+      equality: keyEquality("id"),
       scheduler: windowScheduler(10)
     })
     const one = batcher.fetch(1)
@@ -98,6 +101,7 @@ describe("batcher", () => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
+      equality: keyEquality("id"),
       scheduler: bufferScheduler(10)
     })
 
@@ -128,7 +132,7 @@ describe("batcher", () => {
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
       scheduler: bufferScheduler(10),
-      queryHasher: (q) => `id: ${q}` 
+      equality: keyEquality("id")
     })
 
     const one = batcher.fetch(1)
@@ -147,6 +151,42 @@ describe("batcher", () => {
       { id: 2, name: "bar" },
       { id: 3, name: "lorem" },
       { id: 4, name: "ipsum" }
+    ])
+  })
+
+  test("requests for the same ids should be deduplicates and return the same values", async () => {
+    let fetchCounter = 0
+    let fetchedIds!: number[]
+
+    const batcher = Batcher<{ id: number, name: string }, number>({
+      fetcher: async (ids) => {
+        fetchCounter++
+        fetchedIds = ids
+        return Object.values(data).filter((item) => ids.includes(item.id))
+      },
+      equality: keyEquality("id"),
+      scheduler: bufferScheduler(15),
+    })
+
+    const one = batcher.fetch(1)
+    await setTimeoutP(2)
+    const two = batcher.fetch(2)
+    await setTimeoutP(3)
+    const three = batcher.fetch(1)
+    await setTimeoutP(5)
+    const four = batcher.fetch(2)
+
+    const all = await Promise.all([one, two, three, four])
+
+    expect(fetchCounter).toBe(1)
+
+    expect(fetchedIds).toEqual([1, 2])
+
+    expect(all).toEqual([
+      { id: 1, name: "foo" },
+      { id: 2, name: "bar" },
+      { id: 1, name: "foo" },
+      { id: 2, name: "bar" },
     ])
   })
 })
