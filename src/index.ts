@@ -71,14 +71,14 @@ export type BatcherScheduler = {
  * @returns Batcher<T, Q>
  */
 export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
+  const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10)
+  const equality = typeof config.equality == "function" ? config.equality : keyEquality(config.equality)
+
   let batch = new Set<Q>()
   let currentRequest = deferred<T[]>()
   let timer: NodeJS.Timeout | undefined = undefined
   let start: number | null = null
   let latest: number | null = null
-
-  const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10)
-  const equality = typeof config.equality == "function" ? config.equality : keyEquality(config.equality)
 
   const fetch = (query: Q): Promise<T> => {
     if (!start) start = Date.now()
@@ -102,7 +102,8 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
       })
     }, scheduler(start, latest))
 
-    return currentRequest.value.then(data => data.find(item => equality(item, query)) as T)
+    return currentRequest.value.then(data =>
+      data.find(item => equality(item, query)) as T)
   }
 
   return { fetch }
