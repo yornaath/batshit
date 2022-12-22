@@ -18,7 +18,7 @@ describe("batcher", () => {
       fetcher: async (ids) => {
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
-      equality: keyEquality("id")
+      equality: "id",
     })
 
     const two = await batcher.fetch(2)
@@ -40,7 +40,7 @@ describe("batcher", () => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
-      equality: keyEquality("id")
+      equality: "id",
     })
 
     const twoItemsR = Promise.all([
@@ -72,7 +72,7 @@ describe("batcher", () => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
-      equality: keyEquality("id"),
+      equality: "id",
       scheduler: windowScheduler(10)
     })
     const one = batcher.fetch(1)
@@ -101,7 +101,7 @@ describe("batcher", () => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
-      equality: keyEquality("id"),
+      equality: "id",
       scheduler: bufferScheduler(10)
     })
 
@@ -132,7 +132,7 @@ describe("batcher", () => {
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
       scheduler: bufferScheduler(10),
-      equality: keyEquality("id")
+      equality: "id",
     })
 
     const one = batcher.fetch(1)
@@ -164,7 +164,7 @@ describe("batcher", () => {
         fetchedIds = ids
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
-      equality: keyEquality("id"),
+      equality: "id",
       scheduler: bufferScheduler(15),
     })
 

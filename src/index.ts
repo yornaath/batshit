@@ -38,13 +38,13 @@ export type BatcherConfig<T, Q> = {
    */
   scheduler?: BatcherScheduler
   /**
-   * Hash a item query to string.
-   * Usefull if query params need custom serialization and/or equality checks.
+   * Correlate an item by its query. Used to extract the correct value from the batch of items
+   * to the correct query used to fetch it.
    * 
    * @param query Q
    * @returns string
    */
-  equality: (item:T, query: Q) => boolean
+  equality: keyof T | ((item:T, query: Q) => boolean)
 }
 
 /**
@@ -61,6 +61,12 @@ export type BatcherScheduler = {
   (start: number, latest: number): number
 }
 
+/**
+ * Create a euquality check to check if the query matches a given key on the item data.
+ * 
+ * @param id keyof T
+ * @returns (item:T, query: Q) => boolean
+ */
 export const keyEquality = <T, Q>(id: keyof T) => (item:T, query: Q) => 
   item[id] === query
 
@@ -103,6 +109,7 @@ export const Batcher = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
   let latest: number | null = null
 
   const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10)
+  const equality = typeof config.equality == "function" ? config.equality : keyEquality(config.equality)
 
   const fetch = (query: Q): Promise<T> => {
     batch.add(query)
@@ -124,7 +131,7 @@ export const Batcher = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
       latest = null
     }, scheduler(start, latest))
 
-    return currentRequest.value.then(data => data.find(item => config.equality(item, query)) as T)
+    return currentRequest.value.then(data => data.find(item => equality(item, query)) as T)
   }
 
   return { fetch }
