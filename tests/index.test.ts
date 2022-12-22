@@ -1,6 +1,6 @@
 import { setTimeout as setTimeoutP } from "timers/promises"
 import { describe, expect, test } from 'vitest'
-import { Batcher, bufferScheduler, windowScheduler } from "../src/index"
+import { create, bufferScheduler, windowScheduler } from "../src/index"
 
 const data = [
   { id: 1, name: "foo" },
@@ -12,7 +12,7 @@ const data = [
 
 describe("batcher", () => {
   test('fetching items should work', async () => {
-    const batcher = Batcher<{ id: number, name: string }, number>({
+    const batcher = create<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
@@ -33,7 +33,7 @@ describe("batcher", () => {
   test('fetching items be batched in the same time window', async () => {
     let fetchCounter = 0
 
-    const batcher = Batcher<{ id: number, name: string }, number>({
+    const batcher = create<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
@@ -65,7 +65,7 @@ describe("batcher", () => {
 
   test("windowing", async () => {
     let fetchCounter = 0
-    const batcher = Batcher<{ id: number, name: string }, number>({
+    const batcher = create<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
@@ -94,7 +94,7 @@ describe("batcher", () => {
 
   test("debouncing", async () => {
     let fetchCounter = 0
-    const batcher = Batcher<{ id: number, name: string }, number>({
+    const batcher = create<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
@@ -124,7 +124,7 @@ describe("batcher", () => {
 
   test("with queryHasher config", async () => {
     let fetchCounter = 0
-    const batcher = Batcher<{ id: number, name: string }, number>({
+    const batcher = create<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
@@ -156,7 +156,7 @@ describe("batcher", () => {
     let fetchCounter = 0
     let fetchedIds!: number[]
 
-    const batcher = Batcher<{ id: number, name: string }, number>({
+    const batcher = create<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         fetchedIds = ids

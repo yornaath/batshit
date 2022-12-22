@@ -70,7 +70,7 @@ export type BatcherScheduler = {
  * @param config BatcherConfig<T, Q>
  * @returns Batcher<T, Q>
  */
-export const Batcher = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
+export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
   let batch = new Set<Q>()
   let currentRequest = deferred<T[]>()
   let timer: NodeJS.Timeout | undefined = undefined

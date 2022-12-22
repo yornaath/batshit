@@ -44,7 +44,7 @@ export type BatcherConfig<T, Q> = {
     equality: keyof T | ((item: T, query: Q) => boolean);
 };
 /**
- *
+ * A function to schedule batch execution timing
  */
 export type BatcherScheduler = {
     /**
@@ -56,6 +56,16 @@ export type BatcherScheduler = {
      */
     (start: number, latest: number): number;
 };
+/**
+ * Create a batch manager for a given collection of a data type.
+ * Will batch all .get calls given inside a scheduled time window into a singel request.
+ *
+ * @generic T - The type of the data.
+ * @generic Q - item query type
+ * @param config BatcherConfig<T, Q>
+ * @returns Batcher<T, Q>
+ */
+export declare const create: <T, Q>(config: BatcherConfig<T, Q>) => Batcher<T, Q>;
 /**
  * Create a euquality check to check if the query matches a given key on the item data.
  *
@@ -78,14 +88,4 @@ export declare const windowScheduler: (ms: number) => BatcherScheduler;
  * @returns BatcherScheduler
  */
 export declare const bufferScheduler: (ms: number) => BatcherScheduler;
-/**
- * Create a batch manager for a given collection of a data type.
- * Will batch all .get calls given inside a scheduled time window into a singel request.
- *
- * @generic T - The type of the data.
- * @generic Q - item query type
- * @param config BatcherConfig<T, Q>
- * @returns Batcher<T, Q>
- */
-export declare const Batcher: <T, Q>(config: BatcherConfig<T, Q>) => Batcher<T, Q>;
 //# sourceMappingURL=index.d.ts.map

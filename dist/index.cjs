@@ -3,33 +3,6 @@
 var deferred = require('./deferred.cjs');
 
 /**
- * Create a euquality check to check if the query matches a given key on the item data.
- *
- * @param key keyof T
- * @returns (item:T, query: Q) => boolean
- */
-const keyEquality = (key) => (item, query) => item[key] === query;
-/**
- * Give a window in ms where all queued fetched made within the window will be batched into
- * one singler batch fetch call.
- *
- * @param ms number
- * @returns BatcherScheduler
- */
-const windowScheduler = (ms) => (start, latest) => {
-    const spent = latest - start;
-    return ms - spent;
-};
-/**
- * Give a buffer time in ms. Will give another buffer window when queueing a fetch.
- *
- * @param ms number
- * @returns BatcherScheduler
- */
-const bufferScheduler = (ms) => () => {
-    return ms;
-};
-/**
  * Create a batch manager for a given collection of a data type.
  * Will batch all .get calls given inside a scheduled time window into a singel request.
  *
@@ -38,7 +11,7 @@ const bufferScheduler = (ms) => () => {
  * @param config BatcherConfig<T, Q>
  * @returns Batcher<T, Q>
  */
-const Batcher = (config) => {
+const create = (config) => {
     let batch = new Set();
     let currentRequest = deferred.deferred();
     let timer = undefined;
@@ -68,9 +41,36 @@ const Batcher = (config) => {
     };
     return { fetch };
 };
+/**
+ * Create a euquality check to check if the query matches a given key on the item data.
+ *
+ * @param key keyof T
+ * @returns (item:T, query: Q) => boolean
+ */
+const keyEquality = (key) => (item, query) => item[key] === query;
+/**
+ * Give a window in ms where all queued fetched made within the window will be batched into
+ * one singler batch fetch call.
+ *
+ * @param ms number
+ * @returns BatcherScheduler
+ */
+const windowScheduler = (ms) => (start, latest) => {
+    const spent = latest - start;
+    return ms - spent;
+};
+/**
+ * Give a buffer time in ms. Will give another buffer window when queueing a fetch.
+ *
+ * @param ms number
+ * @returns BatcherScheduler
+ */
+const bufferScheduler = (ms) => () => {
+    return ms;
+};
 
-exports.Batcher = Batcher;
 exports.bufferScheduler = bufferScheduler;
+exports.create = create;
 exports.keyEquality = keyEquality;
 exports.windowScheduler = windowScheduler;
 //# sourceMappingURL=index.cjs.map
