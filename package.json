@@ -1,13 +1,20 @@
 {
-  "name": "batched",
+  "name": "@yornaath/batshit",
+  "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
+  "author": {
+    "name": "Jørn Andre",
+    "url": "https://github.com/yornaath"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yornaath"
+  },
   "packageManager": "yarn@3.3.1",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "build": "¤ echo build step not implemented"
   },
   "devDependencies": {
     "vitest": "^0.26.2"
-  },
-  "dependencies": {
-    "object-hash": "^3.0.0"
   }
 }

@@ -1,6 +1,6 @@
 # batshit
 
-A batch manager that will batch requests for a certain data type within a given window.
+A batch manager that will deduplicate and batch requests for a certain data type made within a window.
 
 ## Quickstart
 
