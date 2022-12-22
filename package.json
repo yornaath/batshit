@@ -5,6 +5,19 @@
     "name": "Jørn Andre",
     "url": "https://github.com/yornaath"
   },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist/*"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/yornaath"
@@ -13,10 +26,14 @@
   "scripts": {
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "build": "echo ¤ build step not implemented"
+    "build": "rm -rf ./dist && rollup -c"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
     "@vitest/coverage-c8": "^0.26.2",
+    "rollup": "^3.8.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "typescript": "^4.9.4",
     "vitest": "^0.26.2"
   }
 }
