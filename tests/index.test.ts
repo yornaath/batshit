@@ -1,8 +1,6 @@
-import { assert, expect, test, describe } from 'vitest'
 import { setTimeout as setTimeoutP } from "timers/promises"
-import { Batcher, bufferScheduler, keyEquality, windowScheduler } from "../src/index"
-
-// Edit an assertion and save to see HMR in action
+import { describe, expect, test } from 'vitest'
+import { Batcher, bufferScheduler, windowScheduler } from "../src/index"
 
 const data = [
   { id: 1, name: "foo" },

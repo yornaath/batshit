@@ -36,7 +36,6 @@
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-typescript": "^10.0.1",
     "@vitest/coverage-c8": "^0.26.2",
-    "batshit-npm": "npm:@yornaath/batshit@latest",
     "rollup": "^3.8.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "typescript": "^4.9.4",

@@ -48,7 +48,7 @@ export type BatcherConfig<T, Q> = {
 }
 
 /**
- * 
+ * A function to schedule batch execution timing
  */
 export type BatcherScheduler = {
   /**
@@ -59,37 +59,6 @@ export type BatcherScheduler = {
    * @returns number - the number of ms to wait from latest queued fetch until executing batchh fetch call.
    */
   (start: number, latest: number): number
-}
-
-/**
- * Create a euquality check to check if the query matches a given key on the item data.
- * 
- * @param key keyof T
- * @returns (item:T, query: Q) => boolean
- */
-export const keyEquality = <T, Q>(key: keyof T) => (item:T, query: Q) => 
-  item[key] === query
-
-/**
- * Give a window in ms where all queued fetched made within the window will be batched into
- * one singler batch fetch call.
- * 
- * @param ms number
- * @returns BatcherScheduler
- */
-export const windowScheduler: (ms: number) => BatcherScheduler = (ms) => (start, latest) => {
-  const spent = latest - start
-  return ms - spent
-}
-
-/**
- * Give a buffer time in ms. Will give another buffer window when queueing a fetch.
- * 
- * @param ms number
- * @returns BatcherScheduler
- */
-export const bufferScheduler: (ms: number) => BatcherScheduler = (ms) => () => {
-  return ms
 }
 
 /**
@@ -135,4 +104,35 @@ export const Batcher = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
   }
 
   return { fetch }
+}
+
+/**
+ * Create a euquality check to check if the query matches a given key on the item data.
+ * 
+ * @param key keyof T
+ * @returns (item:T, query: Q) => boolean
+ */
+export const keyEquality = <T, Q>(key: keyof T) => (item:T, query: Q) => 
+  item[key] === query
+
+/**
+ * Give a window in ms where all queued fetched made within the window will be batched into
+ * one singler batch fetch call.
+ * 
+ * @param ms number
+ * @returns BatcherScheduler
+ */
+export const windowScheduler: (ms: number) => BatcherScheduler = (ms) => (start, latest) => {
+  const spent = latest - start
+  return ms - spent
+}
+
+/**
+ * Give a buffer time in ms. Will give another buffer window when queueing a fetch.
+ * 
+ * @param ms number
+ * @returns BatcherScheduler
+ */
+export const bufferScheduler: (ms: number) => BatcherScheduler = (ms) => () => {
+  return ms
 }
