@@ -1,4 +1,4 @@
-# batshit ![CI](https://github.com/yornaath/batshit/actions/workflows/ci/badge.svg)
+# batshit [![CI](https://github.com/yornaath/batshit/actions/workflows/ci.yml/badge.svg)](https://github.com/yornaath/batshit/actions/workflows/ci.yml)
 
 A batch manager that will deduplicate and batch requests for a certain data type made within a window.
 
