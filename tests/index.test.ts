@@ -1,6 +1,6 @@
 import { assert, expect, test, describe } from 'vitest'
 import { setTimeout as setTimeoutP } from "timers/promises"
-import { Batcher, bufferScheduler, keyEquality, windowScheduler } from "./index"
+import { Batcher, bufferScheduler, keyEquality, windowScheduler } from "../src/index"
 
 // Edit an assertion and save to see HMR in action
 

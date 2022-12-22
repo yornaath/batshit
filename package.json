@@ -1,14 +1,18 @@
 {
   "name": "@yornaath/batshit",
+  "version": "0.0.2",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
     "url": "https://github.com/yornaath"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
@@ -26,11 +30,13 @@
   "scripts": {
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "build": "rm -rf ./dist && rollup -c"
+    "build": "rm -rf ./dist && rollup -c && tsc"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-typescript": "^10.0.1",
     "@vitest/coverage-c8": "^0.26.2",
+    "batshit-npm": "npm:@yornaath/batshit@latest",
     "rollup": "^3.8.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "typescript": "^4.9.4",

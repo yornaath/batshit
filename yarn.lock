@@ -243,6 +243,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rollup/plugin-typescript@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@rollup/plugin-typescript@npm:10.0.1"
+  dependencies:
+    "@rollup/pluginutils": ^5.0.1
+    resolve: ^1.22.1
+  peerDependencies:
+    rollup: ^2.14.0||^3.0.0
+    tslib: "*"
+    typescript: ">=3.7.0"
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+    tslib:
+      optional: true
+  checksum: d3e85674b5ff56c4376bbd79fd2baced3e988b7110d60b1f818eb344721f5605eaa3b56a1668631d210399db7188a7cc4790bb423ad9e56144d015fd1591ccc3
+  languageName: node
+  linkType: hard
+
 "@rollup/pluginutils@npm:^4.1.2":
   version: 4.2.1
   resolution: "@rollup/pluginutils@npm:4.2.1"
@@ -328,7 +347,9 @@ __metadata:
   resolution: "@yornaath/batshit@workspace:."
   dependencies:
     "@rollup/plugin-commonjs": ^24.0.0
+    "@rollup/plugin-typescript": ^10.0.1
     "@vitest/coverage-c8": ^0.26.2
+    batshit-npm: "npm:@yornaath/batshit@latest"
     rollup: ^3.8.0
     rollup-plugin-typescript2: ^0.34.1
     typescript: ^4.9.4
@@ -433,6 +454,13 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 9706c088a283058a8a99e0bf91b0a2f75497f185980d9ffa8b304de1d9e58ebda7c72c07ebf01dadedaac5b2907b2c6f566f660d62bd336c3468e960403b9d65
+  languageName: node
+  linkType: hard
+
+"batshit-npm@npm:@yornaath/batshit@latest":
+  version: 0.0.1
+  resolution: "@yornaath/batshit@npm:0.0.1"
+  checksum: 9b6ac94a3b17374a4bc82dd57870ca5776d27ff293a0b3d55d0b39d541f11ce6543dd912f8f3035e881005b9558f0a2aaddc79927f8f6efd5ea01490a04b13d1
   languageName: node
   linkType: hard
 

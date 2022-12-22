@@ -1,24 +1,6 @@
 'use strict';
 
-/**
- * Create a new Deffered
- *
- * @generic T - value of the deffered
- * @returns Deferred<T>
- */
-const deferred = () => {
-    let resolve;
-    let reject;
-    const value = new Promise((_resolve, _reject) => {
-        resolve = _resolve;
-        reject = _reject;
-    });
-    return {
-        resolve,
-        reject,
-        value,
-    };
-};
+var deferred = require('./deferred.cjs');
 
 /**
  * Create a euquality check to check if the query matches a given key on the item data.
@@ -58,7 +40,7 @@ const bufferScheduler = (ms) => () => {
  */
 const Batcher = (config) => {
     let batch = new Set();
-    let currentRequest = deferred();
+    let currentRequest = deferred.deferred();
     let timer = undefined;
     let start = null;
     let latest = null;
@@ -77,7 +59,7 @@ const Batcher = (config) => {
                 _currentRequest.resolve(data);
             });
             batch = new Set();
-            currentRequest = deferred();
+            currentRequest = deferred.deferred();
             timer = undefined;
             start = null;
             latest = null;
@@ -91,3 +73,4 @@ exports.Batcher = Batcher;
 exports.bufferScheduler = bufferScheduler;
 exports.keyEquality = keyEquality;
 exports.windowScheduler = windowScheduler;
+//# sourceMappingURL=index.cjs.map

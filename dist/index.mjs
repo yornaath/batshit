@@ -1,22 +1,4 @@
-/**
- * Create a new Deffered
- *
- * @generic T - value of the deffered
- * @returns Deferred<T>
- */
-const deferred = () => {
-    let resolve;
-    let reject;
-    const value = new Promise((_resolve, _reject) => {
-        resolve = _resolve;
-        reject = _reject;
-    });
-    return {
-        resolve,
-        reject,
-        value,
-    };
-};
+import { deferred } from './deferred.mjs';
 
 /**
  * Create a euquality check to check if the query matches a given key on the item data.
@@ -86,3 +68,4 @@ const Batcher = (config) => {
 };
 
 export { Batcher, bufferScheduler, keyEquality, windowScheduler };
+//# sourceMappingURL=index.mjs.map
