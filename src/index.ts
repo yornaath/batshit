@@ -90,14 +90,16 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
     timer = setTimeout(() => {
       const req = config.fetcher([...batch])
       const _currentRequest = currentRequest
-      req.then(data => {
-        _currentRequest.resolve(data)
-      })
+     
       batch = new Set()
       currentRequest = deferred<T[]>()
       timer = undefined
       start = null
       latest = null
+
+      req.then(data => {
+        _currentRequest.resolve(data)
+      })
     }, scheduler(start, latest))
 
     return currentRequest.value.then(data => data.find(item => equality(item, query)) as T)
