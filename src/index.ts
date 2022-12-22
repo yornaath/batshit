@@ -9,14 +9,14 @@ import { deferred } from "./deferred"
  */
 export type Batcher<T, Q> = {
   /**
-   * Schedule a get request by the data types id field.
+   * Schedule a get request for a query.
    * 
    * @generic T - The type of the data.
    * @generic Q - item query type
-   * @param id Q
+   * @param query Q
    * @returns Promise<T>
    */
-  fetch: (id: Q) => Promise<T>
+  fetch: (query: Q) => Promise<T>
 }
 
 /**
@@ -27,12 +27,12 @@ export type Batcher<T, Q> = {
  */
 export type BatcherConfig<T, Q> = {
   /**
-   * The function that makes the batched request for the current batch if item ids.
+   * The function that makes the batched request for the current batch queries
    * 
-   * @param ids T[ID][]
+   * @param queries Q[]
    * @returns Promise<T[]
    */
-  fetcher: (ids: Q[]) => Promise<T[]>
+  fetcher: (queries: Q[]) => Promise<T[]>
   /**
    * The scheduling function.
    */
@@ -64,11 +64,11 @@ export type BatcherScheduler = {
 /**
  * Create a euquality check to check if the query matches a given key on the item data.
  * 
- * @param id keyof T
+ * @param key keyof T
  * @returns (item:T, query: Q) => boolean
  */
-export const keyEquality = <T, Q>(id: keyof T) => (item:T, query: Q) => 
-  item[id] === query
+export const keyEquality = <T, Q>(key: keyof T) => (item:T, query: Q) => 
+  item[key] === query
 
 /**
  * Give a window in ms where all queued fetched made within the window will be batched into
@@ -98,8 +98,8 @@ export const bufferScheduler: (ms: number) => BatcherScheduler = (ms) => () => {
  * 
  * @generic T - The type of the data.
  * @generic Q - item query type
- * @param config BatcherConfig<T, ID>
- * @returns Batcher<T, ID>
+ * @param config BatcherConfig<T, Q>
+ * @returns Batcher<T, Q>
  */
 export const Batcher = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
   let batch = new Set<Q>()
