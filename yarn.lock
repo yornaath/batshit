@@ -342,14 +342,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yornaath/batshit@workspace:., batshit-npm@npm:@yornaath/batshit@0.0.2":
+"@yornaath/batshit@workspace:.":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit@workspace:."
   dependencies:
     "@rollup/plugin-commonjs": ^24.0.0
     "@rollup/plugin-typescript": ^10.0.1
     "@vitest/coverage-c8": ^0.26.2
-    batshit-npm: "npm:@yornaath/batshit@0.0.2"
     rollup: ^3.8.0
     rollup-plugin-typescript2: ^0.34.1
     typescript: ^4.9.4
