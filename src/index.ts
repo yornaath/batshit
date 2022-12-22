@@ -5,40 +5,46 @@ import { deferred } from "./deferred"
  * A batch manager that will batch requests for a certain data type within a given window.
  * 
  * @generic T - The type of the data.
- * @generic ID extends keyof T.
+ * @generic Q - item query type
  */
-export type Batcher<T, ID extends keyof T> = {
+export type Batcher<T, Q> = {
   /**
    * Schedule a get request by the data types id field.
    * 
-   * @param id T[ID]
+   * @generic T - The type of the data.
+   * @generic Q - item query type
+   * @param id Q
    * @returns Promise<T>
    */
-  fetch: (id: T[ID]) => Promise<T>
+  fetch: (id: Q) => Promise<T>
 }
 
 /**
  * Config needed to create a Batcher
  * 
  * @generic T - The type of the data.
- * @generic ID extends keyof T.
+ * @generic Q - item query type
  */
-export type BatcherConfig<T, ID extends keyof T> = {
-  /**
-   * The key in the data type that is the unique identifier.
-   */
-  idKey: ID,
+export type BatcherConfig<T, Q> = {
   /**
    * The function that makes the batched request for the current batch if item ids.
    * 
    * @param ids T[ID][]
    * @returns Promise<T[]
    */
-  fetcher: (ids: T[ID][]) => Promise<T[]>
+  fetcher: (ids: Q[]) => Promise<T[]>
   /**
    * The scheduling function.
    */
   scheduler?: BatcherScheduler
+  /**
+   * Hash a item query to string.
+   * Usefull if query params need custom serialization and/or equality checks.
+   * 
+   * @param query Q
+   * @returns string
+   */
+  queryHasher?: (query: Q) => string
 }
 
 /**
@@ -82,12 +88,12 @@ export const bufferScheduler: (ms: number) => BatcherScheduler = (ms) => () => {
  * Will batch all .get calls given inside a scheduled time window into a singel request.
  * 
  * @generic T - The type of the data.
- * @generic ID extends keyof T.
+ * @generic Q - item query type
  * @param config BatcherConfig<T, ID>
  * @returns Batcher<T, ID>
  */
-export const Batcher = <T, ID extends keyof T>(config: BatcherConfig<T, ID>): Batcher<T, ID> => {
-  let batch = new Set<T[ID]>()
+export const Batcher = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
+  let batch = new Set<Q>()
   let currentRequest = deferred<T[]>()
   let timer: NodeJS.Timeout | undefined = undefined
   let start: number | null = null
@@ -95,8 +101,8 @@ export const Batcher = <T, ID extends keyof T>(config: BatcherConfig<T, ID>): Ba
 
   const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10)
 
-  const get = (id: T[ID]): Promise<T> => {
-    batch.add(id)
+  const fetch = (query: Q): Promise<T> => {
+    batch.add(query)
     clearTimeout(timer)
 
     if (!start) start = Date.now()
@@ -114,8 +120,16 @@ export const Batcher = <T, ID extends keyof T>(config: BatcherConfig<T, ID>): Ba
       start = null
       latest = null
     }, scheduler(start, latest))
-    return currentRequest.value.then(data => data.find(item => item[config.idKey] === id) as T)
+
+    const index = [...batch].findIndex(q => {
+      if(config.queryHasher) {
+        return config.queryHasher(q) === config.queryHasher(query)
+      }
+      return q === query
+    })
+
+    return currentRequest.value.then(data => data[index])
   }
 
-  return { fetch: get }
+  return { fetch }
 }

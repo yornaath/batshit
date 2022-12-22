@@ -14,8 +14,7 @@ const data = [
 
 describe("batcher", () => {
   test('fetching items should work', async () => {
-    const batcher = Batcher<{ id: number, name: string }, "id">({
-      idKey: "id",
+    const batcher = Batcher<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
@@ -35,8 +34,7 @@ describe("batcher", () => {
   test('fetching items be batched in the same time window', async () => {
     let fetchCounter = 0
 
-    const batcher = Batcher<{ id: number, name: string }, "id">({
-      idKey: "id",
+    const batcher = Batcher<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
@@ -67,8 +65,7 @@ describe("batcher", () => {
 
   test("windowing", async () => {
     let fetchCounter = 0
-    const batcher = Batcher<{ id: number, name: string }, "id">({
-      idKey: "id",
+    const batcher = Batcher<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
@@ -96,13 +93,42 @@ describe("batcher", () => {
 
   test("debouncing", async () => {
     let fetchCounter = 0
-    const batcher = Batcher<{ id: number, name: string }, "id">({
-      idKey: "id",
+    const batcher = Batcher<{ id: number, name: string }, number>({
       fetcher: async (ids) => {
         fetchCounter++
         return Object.values(data).filter((item) => ids.includes(item.id))
       },
       scheduler: bufferScheduler(10)
+    })
+
+    const one = batcher.fetch(1)
+    await setTimeoutP(2)
+    const two = batcher.fetch(2)
+    await setTimeoutP(3)
+    const three = batcher.fetch(3)
+    await setTimeoutP(5)
+    const four = batcher.fetch(4)
+
+    const all = await Promise.all([one, two, three, four])
+
+    expect(fetchCounter).toBe(1)
+    expect(all).toEqual([
+      { id: 1, name: "foo" },
+      { id: 2, name: "bar" },
+      { id: 3, name: "lorem" },
+      { id: 4, name: "ipsum" }
+    ])
+  })
+
+  test("with queryHasher config", async () => {
+    let fetchCounter = 0
+    const batcher = Batcher<{ id: number, name: string }, number>({
+      fetcher: async (ids) => {
+        fetchCounter++
+        return Object.values(data).filter((item) => ids.includes(item.id))
+      },
+      scheduler: bufferScheduler(10),
+      queryHasher: (q) => `id: ${q}` 
     })
 
     const one = batcher.fetch(1)
