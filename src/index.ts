@@ -14,7 +14,7 @@ export type Batcher<T, ID extends keyof T> = {
    * @param id T[ID]
    * @returns Promise<T>
    */
-  get: (id: T[ID]) => Promise<T>
+  fetch: (id: T[ID]) => Promise<T>
 }
 
 /**
@@ -117,5 +117,5 @@ export const Batcher = <T, ID extends keyof T>(config: BatcherConfig<T, ID>): Ba
     return currentRequest.value.then(data => data.find(item => item[config.idKey] === id) as T)
   }
 
-  return { get }
+  return { fetch: get }
 }

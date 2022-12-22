@@ -21,12 +21,12 @@ describe("batcher", () => {
       },
     })
 
-    const two = await batcher.get(2)
+    const two = await batcher.fetch(2)
 
     expect(two).toEqual({ id: 2, name: "bar" })
 
     const all = await Promise.all([
-      batcher.get(1), batcher.get(2), batcher.get(3), batcher.get(4), batcher.get(5)
+      batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4), batcher.fetch(5)
     ])
 
     expect(all).toEqual(data)
@@ -44,13 +44,13 @@ describe("batcher", () => {
     })
 
     const twoItemsR = Promise.all([
-      batcher.get(2), batcher.get(5)
+      batcher.fetch(2), batcher.fetch(5)
     ])
 
     await setTimeoutP(30)
 
     const allR = Promise.all([
-      batcher.get(1), batcher.get(2), batcher.get(3), batcher.get(4), batcher.get(5)
+      batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4), batcher.fetch(5)
     ])
 
     const [twoItems, all] = await Promise.all([twoItemsR, allR])
@@ -75,13 +75,13 @@ describe("batcher", () => {
       },
       scheduler: windowScheduler(10)
     })
-    const one = batcher.get(1)
+    const one = batcher.fetch(1)
     await setTimeoutP(2)
-    const two = batcher.get(2)
+    const two = batcher.fetch(2)
     await setTimeoutP(3)
-    const three = batcher.get(3)
+    const three = batcher.fetch(3)
     await setTimeoutP(5)
-    const four = batcher.get(4)
+    const four = batcher.fetch(4)
 
     const all = await Promise.all([one, two, three, four])
 
@@ -105,13 +105,13 @@ describe("batcher", () => {
       scheduler: bufferScheduler(10)
     })
 
-    const one = batcher.get(1)
+    const one = batcher.fetch(1)
     await setTimeoutP(2)
-    const two = batcher.get(2)
+    const two = batcher.fetch(2)
     await setTimeoutP(3)
-    const three = batcher.get(3)
+    const three = batcher.fetch(3)
     await setTimeoutP(5)
-    const four = batcher.get(4)
+    const four = batcher.fetch(4)
 
     const all = await Promise.all([one, two, three, four])
 

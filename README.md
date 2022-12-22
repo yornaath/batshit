@@ -25,8 +25,8 @@ const users = Batcher<User, "id">({
 /**
  * Requests will be batched to one call since they are done within the same time window of 10 ms. 
  */
-const bob = users.get(1)
-const alice = users.get(2)
+const bob = users.fetch(1)
+const alice = users.fetch(2)
 
 const bobUndtAlice = await Promise.all([bob, alice])
 
@@ -35,8 +35,8 @@ await delay(100)
 /**
  * New Requests will be batched in a another call since not within the timeframe.
  */
-const joe = users.get(3)
-const margareth = users.get(4)
+const joe = users.fetch(3)
+const margareth = users.fetch(4)
 
 const joeUndtMargareth = await Promise.all([ joe, margareth ])
 
@@ -53,7 +53,7 @@ import { useQuery } from "react-query"
 
 const useUser = (id: number) => {
   return useQuery([ "users", id ], async () => {
-    return users.get(id)
+    return users.fetch(id)
   })
 }
 
