@@ -44,7 +44,7 @@ export type BatcherConfig<T, Q> = {
    * @param query Q
    * @returns string
    */
-  equality: keyof T | ((item:T, query: Q) => boolean)
+  equality: keyof T | ((item: T, query: Q) => boolean)
 }
 
 /**
@@ -81,16 +81,16 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
   const equality = typeof config.equality == "function" ? config.equality : keyEquality(config.equality)
 
   const fetch = (query: Q): Promise<T> => {
-    batch.add(query)
-    clearTimeout(timer)
-
     if (!start) start = Date.now()
     latest = Date.now()
+
+    batch.add(query)
+    clearTimeout(timer)
 
     timer = setTimeout(() => {
       const req = config.fetcher([...batch])
       const _currentRequest = currentRequest
-     
+
       batch = new Set()
       currentRequest = deferred<T[]>()
       timer = undefined
@@ -114,7 +114,7 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
  * @param key keyof T
  * @returns (item:T, query: Q) => boolean
  */
-export const keyEquality = <T, Q>(key: keyof T) => (item:T, query: Q) => 
+export const keyEquality = <T, Q>(key: keyof T) => (item: T, query: Q) =>
   item[key] === query
 
 /**
