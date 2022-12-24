@@ -1,5 +1,5 @@
 {
-  "name": "@yornaath/batshit",
+  "name": "batshit-repo",
   "version": "0.0.3",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
@@ -9,18 +9,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
-    }
-  },
-  "files": [
-    "dist/*"
+  "workspaces": [
+    "packages/*"
   ],
   "repository": {
     "type": "git",
@@ -28,9 +18,9 @@
   },
   "packageManager": "yarn@3.3.1",
   "scripts": {
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
-    "build": "rm -rf ./dist && rollup -c && tsc"
+    "test": "turbo test",
+    "coverage": "turbo coverage",
+    "build": "turbo build"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
@@ -38,6 +28,7 @@
     "@vitest/coverage-c8": "^0.26.2",
     "rollup": "^3.8.0",
     "rollup-plugin-typescript2": "^0.34.1",
+    "turbo": "^1.6.3",
     "typescript": "^4.9.4",
     "vitest": "^0.26.2"
   }
