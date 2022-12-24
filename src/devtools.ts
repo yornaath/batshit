@@ -1,5 +1,22 @@
 import { BatcherConfig } from ".";
 
+export type Devtools<T, Q> = {
+  for: (display: string) => {
+    create: (_event: { seq: number; config: BatcherConfig<T, Q> }) => void;
+    queue: (_event: {
+      seq: number;
+      query: Q;
+      batch: Q[];
+      start: number;
+      latest: number;
+      scheduled: number;
+    }) => void;
+    fetch: (_event: { seq: number; batch: Q[] }) => void;
+    data: (_event: { seq: number; data: T[] }) => void;
+    error: (_event: { seq: number; error: Error }) => void;
+  };
+};
+
 declare global {
   var __BATSHIT_DEVTOOLS__: Devtools<any, any> | undefined;
 }
@@ -13,8 +30,12 @@ export const Devtools = <T, Q>(
         const event: CreateEvent<T, Q> = { ..._event, name, type: "create" };
         onEvent(event);
       },
-      add: (_event) => {
-        const event: AddEvent<T, Q> = { ..._event, name: name, type: "add" };
+      queue: (_event) => {
+        const event: QueueEvent<T, Q> = {
+          ..._event,
+          name: name,
+          type: "queue",
+        };
         onEvent(event);
       },
       fetch: (_event) => {
@@ -33,25 +54,9 @@ export const Devtools = <T, Q>(
   };
 };
 
-export type Devtools<T, Q> = {
-  for: (display: string) => {
-    create: (_event: { seq: number; config: BatcherConfig<T, Q> }) => void;
-    add: (_event: {
-      seq: number;
-      batch: Q[];
-      start: number;
-      latest: number;
-      scheduled: number;
-    }) => void;
-    fetch: (_event: { seq: number; batch: Q[] }) => void;
-    data: (_event: { seq: number; data: T[] }) => void;
-    error: (_event: { seq: number; error: Error }) => void;
-  };
-};
-
 export type BatshitEvent<Q, T> =
   | CreateEvent<T, Q>
-  | AddEvent<T, Q>
+  | QueueEvent<T, Q>
   | FetchEvent<T, Q>
   | DataEvent<T, Q>
   | ErrorEvent<T, Q>;
@@ -62,8 +67,8 @@ export type CreateEvent<T, Q> = {
   seq: number;
   config: BatcherConfig<T, Q>;
 };
-export type AddEvent<T, Q> = {
-  type: "add";
+export type QueueEvent<T, Q> = {
+  type: "queue";
   name: string;
   seq: number;
   batch: Q[];

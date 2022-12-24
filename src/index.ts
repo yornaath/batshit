@@ -104,8 +104,9 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
 
     const scheduled = scheduler(start, latest);
 
-    devtools?.add({
+    devtools?.queue({
       seq,
+      query,
       batch: [...batch],
       scheduled,
       latest,
@@ -113,10 +114,11 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
     });
 
     timer = setTimeout(() => {
+      const currentSeq = seq;
       const req = config.fetcher([...batch]);
       const _currentRequest = currentRequest;
 
-      devtools?.fetch({ seq, batch: [...batch] });
+      devtools?.fetch({ seq: currentSeq, batch: [...batch] });
 
       batch = new Set();
       currentRequest = deferred<T[]>();
@@ -126,11 +128,11 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
 
       req
         .then((data) => {
-          devtools?.data({ seq, data });
+          devtools?.data({ seq: currentSeq, data });
           _currentRequest.resolve(data);
         })
         .catch((error) => {
-          devtools?.error({ seq, error });
+          devtools?.error({ seq: currentSeq, error });
           _currentRequest.reject(error);
         });
 
