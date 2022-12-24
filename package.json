@@ -7,7 +7,8 @@
     "url": "https://github.com/yornaath"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "example"
   ],
   "repository": {
     "type": "git",
