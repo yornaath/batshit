@@ -2,9 +2,6 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
   "compilerOptions": {
-    "composite": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
     "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true,
@@ -20,7 +17,10 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@yornaath/batshit": ["./packages/batshit/src"]
+    }
   },
   "exclude": ["node_modules", "dist", "tests"]
 }

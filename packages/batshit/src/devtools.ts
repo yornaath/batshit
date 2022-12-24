@@ -21,7 +21,7 @@ declare global {
   var __BATSHIT_DEVTOOLS__: Devtools<any, any> | undefined;
 }
 
-export const Devtools = <T, Q>(
+export const create = <T, Q>(
   onEvent: (event: BatshitEvent<Q, T>) => void
 ): Devtools<T, Q> => {
   return {

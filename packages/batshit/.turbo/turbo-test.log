@@ -1,0 +1,13 @@
+
+ DEV  v0.26.2 /Users/jorntangen/progg/batshit/packages/batshit
+
+ ✓ tests/index.test.ts  (6 tests) 162ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  14:45:39
+   Duration  655ms (transform 272ms, setup 0ms, collect 77ms, tests 162ms)
+
+
+ PASS  Waiting for file changes...
+       press h to show help, press q to quit

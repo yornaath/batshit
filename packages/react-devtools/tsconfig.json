@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
   "compilerOptions": {
-    "composite": true,
     "rootDir": "./src",
     "outDir": "./dist",
     "emitDeclarationOnly": true,
@@ -20,6 +19,7 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
+    "jsx": "react-jsx",
     "resolveJsonModule": true
   },
   "exclude": ["node_modules", "dist", "tests"]

@@ -6,15 +6,12 @@
     "name": "Jørn Andre",
     "url": "https://github.com/yornaath"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "workspaces": [
     "packages/*"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yornaath"
+    "url": "https://github.com/yornaath/batshit"
   },
   "packageManager": "yarn@3.3.1",
   "scripts": {
