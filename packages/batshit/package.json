@@ -9,12 +9,15 @@
   "publishConfig": {
     "access": "public"
   },
-  "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    },
+    "./dist": {
       "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
     },
