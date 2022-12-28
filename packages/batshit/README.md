@@ -4,6 +4,8 @@ A batch manager that will deduplicate and batch requests for a certain data type
 
 ## Quickstart
 
+Here we are creating a simple batcher that will batch all fetches made within a window of 10 ms into one request.
+
 ```ts
 import { Batcher, keyResolver, windowScheduler } from "@yornaath/batshit";
 
@@ -46,6 +48,8 @@ fetchCalls === 2;
 ```
 
 ## React(query) Example
+
+Here we are also creating a simple batcher that will batch all fetches made within a window of 10 ms into one request since all UserItem components will be rendered and most likely make their queries within the same window of 10 ms.
 
 ```ts
 import { useQuery } from "react-query";
