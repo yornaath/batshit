@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.3
+
+### Patch Changes
+
+- 889fb11: Readme changes.
+
 ## 0.2.2
 
 ### Patch Changes
