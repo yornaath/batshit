@@ -17,10 +17,7 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "resolveJsonModule": true,
-    "paths": {
-      "@yornaath/batshit": ["./packages/batshit/src"]
-    }
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules", "dist", "tests"]
 }
