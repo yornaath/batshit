@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.6
+
+### Patch Changes
+
+- 5a9d3c2: Update package repo
+
 ## 0.2.5
 
 ### Patch Changes
