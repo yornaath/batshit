@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.2
+
+### Patch Changes
+
+- dd23d24: Added readme
+
 ## 0.2.1
 
 ### Patch Changes
