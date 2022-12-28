@@ -38,6 +38,6 @@
   "scripts": {
     "test": "vitest run",
     "coverage": "vitest run --coverage",
-    "build": "rm -rf ./dist && rollup -c && tsc"
+    "build": "rm -rf ./dist && rollup -c && tsc && cp ../../README.md ./README.md"
   }
 }
