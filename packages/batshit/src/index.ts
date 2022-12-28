@@ -25,7 +25,7 @@ export type Batcher<T, Q> = {
  * @generic T - The type of the data.
  * @generic Q - item query type
  */
-export type BatcherConfig<T, Q> = {
+export type BatcherConfig<T, Q, R = T> = {
   /**
    * The function that makes the batched request for the current batch queries
    *
@@ -44,7 +44,7 @@ export type BatcherConfig<T, Q> = {
    * @param query Q
    * @returns string
    */
-  equality: keyof T | ((item: T, query: Q) => boolean);
+  resolver: (items: T[], query: Q) => R;
   /**
    * Display name of the batcher. Used for debugging and devtools.
    */
@@ -74,15 +74,12 @@ export type BatcherScheduler = {
  * @param config BatcherConfig<T, Q>
  * @returns Batcher<T, Q>
  */
-export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
+export const create = <T, Q, R = T>(
+  config: BatcherConfig<T, Q, R>
+): Batcher<ReturnType<typeof config["resolver"]>, Q> => {
   const name = config.name ?? `batcher:${Math.random().toString(16).slice(2)})`;
 
   const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10);
-
-  const equality =
-    typeof config.equality == "function"
-      ? config.equality
-      : keyEquality(config.equality);
 
   const devtools = globalThis.__BATSHIT_DEVTOOLS__?.for(name);
 
@@ -95,7 +92,7 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
 
   devtools?.create({ seq, config });
 
-  const fetch = (query: Q): Promise<T> => {
+  const fetch = (query: Q): Promise<R> => {
     if (!start) start = Date.now();
     latest = Date.now();
 
@@ -139,9 +136,7 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
       seq++;
     }, scheduled);
 
-    return currentRequest.value.then(
-      (data) => data.find((item) => equality(item, query)) as T
-    );
+    return currentRequest.value.then((items) => config.resolver(items, query));
   };
 
   return { fetch };
@@ -153,10 +148,10 @@ export const create = <T, Q>(config: BatcherConfig<T, Q>): Batcher<T, Q> => {
  * @param key keyof T
  * @returns (item:T, query: Q) => boolean
  */
-export const keyEquality =
+export const keyResolver =
   <T, Q>(key: keyof T) =>
-  (item: T, query: Q) =>
-    item[key] === query;
+  (items: T[], query: Q) =>
+    items.find((item) => item[key] == query) as T;
 
 /**
  * Give a window in ms where all queued fetched made within the window will be batched into
