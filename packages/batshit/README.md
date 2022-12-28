@@ -5,7 +5,7 @@ A batch manager that will deduplicate and batch requests for a certain data type
 ## Quickstart
 
 ```ts
-import { Batcher, windowScheduler } from "@yornaath/batshit";
+import { Batcher, keyResolver, windowScheduler } from "@yornaath/batshit";
 
 let fetchCalls = 0;
 
@@ -18,7 +18,7 @@ const users = Batcher<User, number>({
       userId_in: ids,
     });
   },
-  equality: "id",
+  resolver: keyResolver("id"),
   scheduler: windowScheduler(10), // Default and can be omitted.
 });
 
