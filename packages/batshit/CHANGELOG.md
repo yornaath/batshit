@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.5
+
+### Patch Changes
+
+- ef390e3: Readme updates.
+
 ## 0.2.4
 
 ### Patch Changes
