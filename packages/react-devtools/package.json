@@ -6,9 +6,7 @@
     "name": "Jørn Andre",
     "url": "https://github.com/yornaath"
   },
-  "publishConfig": {
-    "access": "public"
-  },
+  "private": true,
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
