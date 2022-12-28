@@ -26,7 +26,7 @@
   },
   "packageManager": "yarn@3.3.1",
   "scripts": {
-    "build": "rm -rf ./dist && rollup -c && tsc"
+    "build": "echo disabled"
   },
   "dependencies": {
     "@yornaath/batshit": "*",
