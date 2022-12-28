@@ -21,6 +21,7 @@
     "build": "turbo build"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.0",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-typescript": "^10.0.1",
     "@vitest/coverage-c8": "^0.26.2",
