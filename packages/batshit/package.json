@@ -4,11 +4,12 @@
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
-    "url": "https://github.com/yornaath"
+    "url": "https://github.com/yornaath/batshit"
   },
   "publishConfig": {
     "access": "public"
   },
+  "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
