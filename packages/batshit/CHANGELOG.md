@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.4
+
+### Patch Changes
+
+- 49103ee: Readme update.
+
 ## 0.2.3
 
 ### Patch Changes
