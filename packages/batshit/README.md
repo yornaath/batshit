@@ -57,7 +57,7 @@ const users = Batcher<User, number>({
       userId_in: ids,
     });
   },
-  equality: "id",
+  resolver: keyResolver("id"),
   scheduler: windowScheduler(10),
 });
 
