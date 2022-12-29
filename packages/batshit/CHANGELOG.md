@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.11
+
+### Patch Changes
+
+- 6e194e3: Added .esm.js files to package json module exports.
+
 ## 0.2.10
 
 ### Patch Changes
