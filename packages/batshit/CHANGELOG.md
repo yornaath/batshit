@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.10
+
+### Patch Changes
+
+- e1808bc: Rename .cjs files to .js
+
 ## 0.2.9
 
 ### Patch Changes
