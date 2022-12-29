@@ -1,6 +1,6 @@
 # @yornaath/batshit [![CI](https://github.com/yornaath/batshit/actions/workflows/ci.yml/badge.svg)](https://github.com/yornaath/batshit/actions/workflows/ci.yml)
 
-A batch manager that will deduplicate and batch requests for a certain data type made within a window. Useful to batch requests made from multiple react components that uses react-query
+A batch manager that will deduplicate and batch requests for a given data type made within a window of time (or other custom scheduling). Useful to batch requests made from multiple react components that uses react-query or do batch processing of accumulated tasks.
 
 ### Codesandbox example
 Here is a codesanbox example using react, typescript, vite and the zeitgeist prediction-markets indexer api.
