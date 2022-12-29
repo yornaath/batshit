@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.9
+
+### Patch Changes
+
+- d8c7f25: Modified exports fields in package json.
+
 ## 0.2.8
 
 ### Patch Changes

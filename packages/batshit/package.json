@@ -1,6 +1,6 @@
 {
   "name": "@yornaath/batshit",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
@@ -9,12 +9,20 @@
   "publishConfig": {
     "access": "public"
   },
-  "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
-    "dist/*"
+    "dist/*",
+    "src"
   ],
   "repository": {
     "type": "git",
