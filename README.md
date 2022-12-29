@@ -2,6 +2,12 @@
 
 A batch manager that will deduplicate and batch requests for a certain data type made within a window. Useful to batch requests made from multiple react components that uses react-query
 
+### Codesandbox example
+Here is a codesanbox example using react, typescript, vite and the zeitgeist prediction-markets indexer api.
+It fetches markets up front and then batches all liquidity pool fetches made from the individual components into one request.
+
+[Codesandbox](https://codesandbox.io/s/yornaath-batshit-example-8f8q3w?file=/src/App.tsx)
+
 ## Quickstart
 
 Here we are creating a simple batcher that will batch all fetches made within a window of 10 ms into one request.
