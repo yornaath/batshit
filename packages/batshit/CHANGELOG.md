@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 5a9d3c2: Update package repo
+- 02667ce: Remove exports.
 
 ## 0.2.5
 
