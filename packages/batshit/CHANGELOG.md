@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.2.8
+
+### Patch Changes
+
+- 04ce3a0: Remove exports
+
 ## 0.2.6
 
 ### Patch Changes
