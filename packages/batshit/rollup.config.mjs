@@ -1,33 +1,44 @@
-import typescript from '@rollup/plugin-typescript'
-import commonjs from '@rollup/plugin-commonjs'
+import typescript from "@rollup/plugin-typescript";
+import commonjs from "@rollup/plugin-commonjs";
 
-const pkg = await import(`${process.cwd()}/package.json`, { assert: { type: 'json' } })
+const pkg = await import(`${process.cwd()}/package.json`, {
+  assert: { type: "json" },
+});
 
 export default {
-  input: 'src/index.ts',
+  input: "src/index.ts",
   external: [
     ...Object.keys(pkg.peerDependencies || {}),
     ...Object.keys(pkg.dependencies || {}),
   ],
   output: [
     {
-      dir: './dist',
-      format: 'esm',
+      dir: "./dist",
+      format: "esm",
       sourcemap: true,
-      exports: 'named',
+      exports: "named",
       preserveModules: true,
-      preserveModulesRoot: 'src',
-      entryFileNames: '[name].mjs',
+      preserveModulesRoot: "src",
+      entryFileNames: "[name].mjs",
     },
     {
-      dir: './dist',
-      format: 'cjs',
+      dir: "./dist",
+      format: "esm",
       sourcemap: true,
-      exports: 'named',
+      exports: "named",
       preserveModules: true,
-      preserveModulesRoot: 'src',
-      entryFileNames: '[name].cjs',
+      preserveModulesRoot: "src",
+      entryFileNames: "[name].esm.js",
+    },
+    {
+      dir: "./dist",
+      format: "cjs",
+      sourcemap: true,
+      exports: "named",
+      preserveModules: true,
+      preserveModulesRoot: "src",
+      entryFileNames: "[name].js",
     },
   ],
-  plugins: [typescript(), commonjs({ exclude: 'node_modules' })],
-}
+  plugins: [typescript(), commonjs({ exclude: "node_modules" })],
+};
