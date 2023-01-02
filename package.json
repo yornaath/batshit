@@ -18,7 +18,8 @@
   "scripts": {
     "test": "turbo test",
     "coverage": "turbo coverage",
-    "build": "turbo build"
+    "build": "turbo build",
+    "build-example": "turbo build && turbo build-example"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
