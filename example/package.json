@@ -9,8 +9,9 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.20.4",
-    "@yornaath/batshit": "workspace:*",
-    "@yornaath/batshit-devtools-react": "workspace:*",
+    "@yornaath/batshit": "0.3.0",
+    "@yornaath/batshit-devtools": "1.0.0",
+    "@yornaath/batshit-devtools-react": "0.1.0",
     "@zeitgeistpm/indexer": "^2.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
