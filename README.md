@@ -26,13 +26,10 @@ Here we are creating a simple batcher that will batch all fetches made within a 
 ```ts
 import { create, keyResolver, windowScheduler } from "@yornaath/batshit";
 
-let fetchCalls = 0;
-
 type User = { id: number; name: string };
 
 const users = create<User, number>({
   fetcher: async (ids) => {
-    fetchCalls++;
     return client.users.where({
       userId_in: ids,
     });
@@ -49,8 +46,6 @@ const alice = users.fetch(2);
 
 const bobUndtAlice = await Promise.all([bob, alice]);
 
-fetchCalls === 1;
-
 await delay(100);
 
 /**
@@ -60,8 +55,6 @@ const joe = users.fetch(3);
 const margareth = users.fetch(4);
 
 const joeUndtMargareth = await Promise.all([joe, margareth]);
-
-fetchCalls === 2;
 ```
 
 ## React(query) Example
