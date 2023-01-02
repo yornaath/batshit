@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { EventEmitter } from "events";
 import {
   createDevtools,
@@ -24,15 +24,41 @@ window.__BATSHIT_DEVTOOLS__ = createDevtools((event) => {
   emitter.emit("event", event);
 });
 
-export const BatshitDevtools = () => {
+export const BatshitDevtools = (props: { defaultOpen?: false }) => {
   const events = React.useSyncExternalStore<BatshitEvent<any, any>[]>(
     subscribe,
     getSnapshot
   );
 
+  const [open, setOpen] = React.useState(
+    props.defaultOpen ||
+      globalThis.localStorage?.getItem("batshit-devtools-open") === "true"
+  );
   const state: BatshitDevtoolsState<any, any> = reduce(events);
 
-  return (
+  useEffect(() => {
+    globalThis.localStorage?.setItem("batshit-devtools-open", open.toString());
+  }, [open]);
+
+  return !open ? (
+    <div
+      title="Open @yornaath/batshit - DEVTOOLS"
+      style={{
+        position: "fixed",
+        bottom: "10px",
+        right: "10px",
+        background: "rgb(30,30,30)",
+        color: "rgb(250,250,250)",
+        fontFamily: "Menlo, monospace",
+        borderRadius: "4px",
+        padding: 8,
+        cursor: "pointer",
+      }}
+      onClick={() => setOpen(true)}
+    >
+      🦇💩
+    </div>
+  ) : (
     <div
       style={{
         position: "fixed",
@@ -50,9 +76,18 @@ export const BatshitDevtools = () => {
         style={{
           padding: "7px 9px",
           background: "rgba(255,255,255, 0.07)",
+          display: "flex",
+          alignContent: "center",
+          alignItems: "center",
         }}
       >
-        @yornaath/batshit - DEVTOOLS
+        <div style={{ flex: 1 }}>@yornaath/batshit - DEVTOOLS</div>
+        <div
+          style={{ color: "rgba(255,255,255, 0.16)", cursor: "pointer" }}
+          onClick={() => setOpen(false)}
+        >
+          &#9660;
+        </div>
       </div>
       <div>
         {Object.entries(state).map(([name, batcherState]) => (
@@ -148,3 +183,5 @@ const Seq = (props: {
     </div>
   );
 };
+
+export default BatshitDevtools;
