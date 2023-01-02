@@ -49,7 +49,7 @@ const bobUndtAlice = await Promise.all([bob, alice]);
 await delay(100);
 
 /**
- * New Requests will be batched in a another call since not within the timeframe.
+ * New Requests will be batched in a another call since not within the first timeframe.
  */
 const joe = users.fetch(3);
 const margareth = users.fetch(4);
