@@ -2,9 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
   "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationMap": true,
+    "baseUrl": "./",
+    "rootDir": "./",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
@@ -17,7 +16,13 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@yornaath/batshit": ["packages/batshit/src"],
+      "@yornaath/batshit-devtools": ["packages/devtools/src"],
+      "@yornaath/batshit-devtools-react": ["packages/devtools-react/src"]
+    }
   },
   "exclude": ["node_modules", "dist", "tests"]
 }

@@ -1,27 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "inlineSources": false,
-    "isolatedModules": true,
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "target": "ES2020",
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "preserveWatchOutput": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "resolveJsonModule": true
+    "outDir": "./dist"
   },
-  "exclude": ["node_modules", "dist", "tests"],
-  "references": [{ "path": "../devtools" }]
+  "exclude": ["node_modules", "dist", "tests"]
 }
