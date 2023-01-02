@@ -6,9 +6,6 @@ import { zeitgeist } from "../sdk";
 
 const poolsBatcher = batshit.create<Ztg.FullPoolFragment, number>({
   fetcher: async (ids) => {
-    if (Math.random() > 0.8) {
-      throw new Error("Random error");
-    }
     const { pools } = await zeitgeist.pools({
       where: {
         poolId_in: ids,
