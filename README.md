@@ -136,7 +136,7 @@ const [alicesPosts, bobsPost] = await Promise.all([
 Tools to debug and inspect the batching process can be found in the [@yornaath/batshit-devtools-react](https://www.npmjs.com/package/@yornaath/batshit-devtools-react) package.
 
 ```bash
-yarn install -D @yornaath/batshit-devtools-react
+yarn install @yornaath/batshit-devtools-react
 ```
 
 ```ts
