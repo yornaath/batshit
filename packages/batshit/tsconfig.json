@@ -3,7 +3,10 @@
   "display": "Default",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true
   },
   "exclude": ["node_modules", "dist", "tests"]
 }
