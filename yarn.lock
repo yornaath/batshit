@@ -1070,7 +1070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yornaath/batshit-devtools-react@0.1.0, @yornaath/batshit-devtools-react@workspace:packages/react-devtools":
+"@yornaath/batshit-devtools-react@workspace:*, @yornaath/batshit-devtools-react@workspace:packages/react-devtools":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit-devtools-react@workspace:packages/react-devtools"
   dependencies:
@@ -1085,7 +1085,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yornaath/batshit-devtools@1.0.0, @yornaath/batshit-devtools@workspace:packages/devtools":
+"@yornaath/batshit-devtools@1.0.0, @yornaath/batshit-devtools@workspace:*, @yornaath/batshit-devtools@workspace:packages/devtools":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit-devtools@workspace:packages/devtools"
   peerDependencies:
@@ -1093,7 +1093,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yornaath/batshit@0.3.0, @yornaath/batshit@workspace:packages/batshit":
+"@yornaath/batshit@0.3.0, @yornaath/batshit@workspace:*, @yornaath/batshit@workspace:packages/batshit":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit@workspace:packages/batshit"
   languageName: unknown
@@ -2019,9 +2019,9 @@ __metadata:
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.9
     "@vitejs/plugin-react": ^3.0.0
-    "@yornaath/batshit": 0.3.0
-    "@yornaath/batshit-devtools": 1.0.0
-    "@yornaath/batshit-devtools-react": 0.1.0
+    "@yornaath/batshit": "workspace:*"
+    "@yornaath/batshit-devtools": "workspace:*"
+    "@yornaath/batshit-devtools-react": "workspace:*"
     "@zeitgeistpm/indexer": ^2.6.0
     react: ^18.2.0
     react-dom: ^18.2.0
