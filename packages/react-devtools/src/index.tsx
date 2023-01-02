@@ -7,13 +7,13 @@ import {
   BatshitDevtoolsState,
 } from "@yornaath/batshit-devtools";
 
-const emitter = new EventEmitter();
+const notifier = new EventEmitter();
 let allEvents: BatshitEvent<any, any>[] = [];
 
 const subscribe = (callback: () => void) => {
-  emitter.addListener("event", callback);
+  notifier.addListener("event", callback);
   return () => {
-    emitter.removeListener("event", callback);
+    notifier.removeListener("event", callback);
   };
 };
 
@@ -21,7 +21,7 @@ const getSnapshot = () => allEvents;
 
 window.__BATSHIT_DEVTOOLS__ = createDevtools((event) => {
   allEvents = [...allEvents, event];
-  emitter.emit("event", event);
+  notifier.emit("event", event);
 });
 
 export const BatshitDevtools = (props: { defaultOpen?: false }) => {
