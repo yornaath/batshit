@@ -16,7 +16,7 @@ The working live code for the example linked below can be found in [./packages/e
 
 ## Install
 ```bash
-yarn install @yornaath/batshit
+yarn add @yornaath/batshit
 ```
 
 ## Quickstart
@@ -136,7 +136,7 @@ const [alicesPosts, bobsPost] = await Promise.all([
 Tools to debug and inspect the batching process can be found in the [@yornaath/batshit-devtools-react](https://www.npmjs.com/package/@yornaath/batshit-devtools-react) package.
 
 ```bash
-yarn install @yornaath/batshit-devtools-react
+yarn add @yornaath/batshit-devtools @yornaath/batshit-devtools-react
 ```
 
 ```ts
