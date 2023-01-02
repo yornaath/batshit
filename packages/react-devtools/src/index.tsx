@@ -48,7 +48,7 @@ export const BatshitDevtools = () => {
     >
       <div
         style={{
-          padding: "5px 8px",
+          padding: "7px 9px",
           background: "rgba(255,255,255, 0.07)",
         }}
       >
@@ -63,7 +63,7 @@ export const BatshitDevtools = () => {
               paddingBottom: "5px",
             }}
           >
-            <h2 style={{ fontSize: "16px", padding: "5px 8px" }}>{name}</h2>
+            <h2 style={{ fontSize: "16px", padding: "7px 9px" }}>{name}</h2>
             {Object.entries(batcherState).map(([seq, seqState]) => (
               <Seq seq={seq} {...seqState} />
             ))}
@@ -96,7 +96,7 @@ const Seq = (props: {
         <div
           style={{
             fontSize: "14px",
-            padding: "5px 8px",
+            padding: "7px 9px",
             marginRight: "5px",
             width: "24px",
             textAlign: "center",
@@ -111,10 +111,10 @@ const Seq = (props: {
         >
           {props.seq}
         </div>
-        <div style={{ flex: 1, marginRight: "5px", padding: "5px 8px" }}>
+        <div style={{ flex: 1, marginRight: "5px", padding: "7px 9px" }}>
           {JSON.stringify(props.batch)}
         </div>
-        <div style={{ padding: "5px 8px" }}>
+        <div style={{ padding: "7px 9px" }}>
           {(props.data || props.error) && (
             <div
               onClick={() => setExpanded(!expanded)}
@@ -131,15 +131,17 @@ const Seq = (props: {
         </div>
       </div>
       {expanded && (
-        <div style={{ overflowY: "scroll", height: "500px" }}>
+        <div style={{ overflowY: "scroll", maxHeight: "500px" }}>
           {props.data ? (
-            <div style={{ padding: "5px 8px" }}>
+            <div style={{ padding: "7px 9px" }}>
               <div>
                 <pre>{JSON.stringify(props.data, null, 2)}</pre>
               </div>
             </div>
           ) : props.error ? (
-            <div>{props.error.message}</div>
+            <div style={{ padding: "7px 9px", color: "red" }}>
+              {props.error.message}
+            </div>
           ) : null}
         </div>
       )}
