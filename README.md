@@ -14,18 +14,23 @@ The working live code for the example linked below can be found in [./packages/e
 
 [Vercel Example app](https://batshit-example.vercel.app/)
 
+## Install
+```bash
+yarn install @yornaath/batshit
+```
+
 ## Quickstart
 
 Here we are creating a simple batcher that will batch all fetches made within a window of 10 ms into one request.
 
 ```ts
-import { Batcher, keyResolver, windowScheduler } from "@yornaath/batshit";
+import { create, keyResolver, windowScheduler } from "@yornaath/batshit";
 
 let fetchCalls = 0;
 
 type User = { id: number; name: string };
 
-const users = Batcher<User, number>({
+const users = create<User, number>({
   fetcher: async (ids) => {
     fetchCalls++;
     return client.users.where({
@@ -65,9 +70,9 @@ Here we are also creating a simple batcher that will batch all fetches made with
 
 ```ts
 import { useQuery } from "react-query";
-import { Batcher, windowScheduler } from "@yornaath/batshit";
+import { create, windowScheduler } from "@yornaath/batshit";
 
-const users = Batcher<User, number>({
+const users = create<User, number>({
   fetcher: async (ids) => {
     return client.users.where({
       userId_in: ids,
@@ -131,4 +136,31 @@ const [alicesPosts, bobsPost] = await Promise.all([
   userposts.fetch({authorId: 1})
   userposts.fetch({authorId: 2})
 ]);
+```
+
+# React Devtools
+
+Tools to debug and inspect the batching process can be found in the [@yornaath/batshit-devtools-react](https://www.npmjs.com/package/@yornaath/batshit-devtools-react) package.
+
+```bash
+yarn install -D @yornaath/batshit-devtools-react
+```
+
+```ts
+import { create, keyResolver, windowScheduler } from "@yornaath/batshit";
+import BatshitDevtools from "@yornaath/batshit-devtools-react";
+
+const batcher = create<Data, number>({
+  fetcher: async (queries) => {...},
+  scheduler: windowScheduler(10),
+  resolver: keyResolver("id"),
+  name: "batcher:data" // used in the devtools to identify a particular batcher.
+});
+
+const App = () => {
+  <div>
+    <Data batcher={batcher} />
+    <BatshitDevtools />
+  </div>
+}
 ```
