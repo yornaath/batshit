@@ -1,4 +1,4 @@
-import BatshitDevtools from "@yornaath/batshit-react-devtools";
+import BatshitDevtools from "@yornaath/batshit-devtools-react";
 import { Market } from "./components/Market";
 import { useMarkets } from "./hooks/useMarkets";
 
