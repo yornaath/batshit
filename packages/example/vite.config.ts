@@ -7,9 +7,9 @@ export default defineConfig({
   resolve: {
     alias: {
       events: "rollup-plugin-node-polyfills/polyfills/events",
-      "@yornaath/batshit/*": "../packages/batshit/src/*",
-      "@yornaath/batshit-devtools/*": "../packages/devtools/src/*",
-      "@yornaath/batshit-devtools-react/*": "../packages/devtools-react/src/*",
+      // "@yornaath/batshit/*": "../packages/batshit/src/*",
+      // "@yornaath/batshit-devtools/*": "../packages/devtools/src/*",
+      // "@yornaath/batshit-devtools-react/*": "../packages/devtools-react/src/*",
     },
   },
 });

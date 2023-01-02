@@ -1070,14 +1070,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yornaath/batshit-devtools-react@workspace:*, @yornaath/batshit-devtools-react@workspace:packages/react-devtools":
+"@yornaath/batshit-devtools-react@*, @yornaath/batshit-devtools-react@workspace:packages/devtools-react":
   version: 0.0.0-use.local
-  resolution: "@yornaath/batshit-devtools-react@workspace:packages/react-devtools"
+  resolution: "@yornaath/batshit-devtools-react@workspace:packages/devtools-react"
   dependencies:
     "@types/lodash-es": ^4.17.6
     "@types/react": ^18.0.26
-    "@yornaath/batshit": "workspace:*"
-    "@yornaath/batshit-devtools": "workspace:*"
+    "@yornaath/batshit": "*"
+    "@yornaath/batshit-devtools": "*"
     lodash-es: ^4.17.21
     react: ^18.2.0
   peerDependencies:
@@ -1085,17 +1085,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yornaath/batshit-devtools@workspace:*, @yornaath/batshit-devtools@workspace:packages/devtools":
+"@yornaath/batshit-devtools@*, @yornaath/batshit-devtools@workspace:packages/devtools":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit-devtools@workspace:packages/devtools"
   languageName: unknown
   linkType: soft
 
-"@yornaath/batshit@workspace:*, @yornaath/batshit@workspace:packages/batshit":
+"@yornaath/batshit@*, @yornaath/batshit@workspace:packages/batshit":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit@workspace:packages/batshit"
   dependencies:
-    "@yornaath/batshit-devtools": "workspace:*"
+    "@yornaath/batshit-devtools": "*"
   languageName: unknown
   linkType: soft
 
@@ -2019,17 +2019,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"example@workspace:example":
+"example@workspace:packages/example":
   version: 0.0.0-use.local
-  resolution: "example@workspace:example"
+  resolution: "example@workspace:packages/example"
   dependencies:
     "@tanstack/react-query": ^4.20.4
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.9
     "@vitejs/plugin-react": ^3.0.0
-    "@yornaath/batshit": "workspace:*"
-    "@yornaath/batshit-devtools": "workspace:*"
-    "@yornaath/batshit-devtools-react": "workspace:*"
+    "@yornaath/batshit": "*"
+    "@yornaath/batshit-devtools": "*"
+    "@yornaath/batshit-devtools-react": "*"
     "@zeitgeistpm/indexer": ^2.6.0
     delay: ^5.0.0
     react: ^18.2.0
