@@ -32,8 +32,5 @@
   "scripts": {
     "coverage": "vitest run --coverage",
     "build": "rm -rf ./dist && rollup -c && tsc"
-  },
-  "peerDependencies": {
-    "@yornaath/batshit": "workspace:*"
   }
 }
