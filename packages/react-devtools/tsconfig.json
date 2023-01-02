@@ -3,8 +3,11 @@
   "display": "Default",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./",
-    "outDir": "./dist"
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true
   },
   "exclude": ["node_modules", "dist", "tests"]
 }
