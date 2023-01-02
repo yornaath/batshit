@@ -3,7 +3,6 @@ import * as batshit from "@yornaath/batshit";
 import * as Ztg from "@zeitgeistpm/indexer";
 import { BatshitDevtools } from "@yornaath/batshit-react-devtools";
 import { useQuery } from "@tanstack/react-query";
-import { FullMarketFragment } from "@zeitgeistpm/indexer";
 
 const zeitgeist = Ztg.create({
   uri: "https://processor.bsr.zeitgeist.pm/graphql",
@@ -19,7 +18,7 @@ const poolsBatcher = batshit.create<Ztg.FullPoolFragment, number>({
     return pools;
   },
   resolver: batshit.keyResolver("poolId"),
-  scheduler: batshit.bufferScheduler(800),
+  scheduler: batshit.bufferScheduler(2000),
   name: "batcher:pools",
 });
 
@@ -32,13 +31,13 @@ function App() {
   });
 
   return (
-    <div className="App">
-      <BatshitDevtools />
+    <div className="App" style={{ fontFamily: "Menlo, monospace" }}>
       <div>
         {markets?.map((market) => (
           <Market key={market.id} market={market} />
         ))}
       </div>
+      <BatshitDevtools />
     </div>
   );
 }
@@ -71,11 +70,12 @@ const Market = (props: { market: Ztg.FullMarketFragment }) => {
         display: "flex",
         alignContent: "center",
         alignItems: "center",
+        marginBottom: 8,
       }}
     >
-      <div style={{ marginRight: 8 }}>{props.market.slug} </div>
+      <div style={{ marginRight: 8, width: 370 }}>{props.market.slug} </div>
       <button style={{ marginRight: 8 }} onClick={onClickFetchPool}>
-        Fetch pool
+        Fetch Volume
       </button>
       {(pool || isFetching) && (
         <div
@@ -83,9 +83,13 @@ const Market = (props: { market: Ztg.FullMarketFragment }) => {
             borderRadius: 4,
             height: 8,
             width: 8,
+            marginRight: 8,
             background: isFetched || !isFetching ? "green" : "yellow",
           }}
         />
+      )}
+      {pool && (
+        <div style={{}}>{Number(pool.volume / 10 ** 10).toFixed(2)}</div>
       )}
     </div>
   );

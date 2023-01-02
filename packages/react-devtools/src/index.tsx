@@ -98,6 +98,8 @@ const Seq = (props: {
             fontSize: "14px",
             padding: "5px 8px",
             marginRight: "5px",
+            width: "24px",
+            textAlign: "center",
             backgroundColor: props.fetching
               ? "yellow"
               : props.error
