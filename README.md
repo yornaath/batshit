@@ -59,7 +59,7 @@ const joeUndtMargareth = await Promise.all([joe, margareth]);
 
 ## React(query) Example
 
-Here we are also creating a simple batcher that will batch all fetches made within a window of 10 ms into one request since all UserItem components will be rendered and most likely make their queries within the same window of 10 ms.
+Here we are also creating a simple batcher that will batch all fetches made within a window of 10 ms into one request. Since all <UserDetails /> items are rendered in one go their individual fetches will be batched into one request.
 
 ```ts
 import { useQuery } from "react-query";
