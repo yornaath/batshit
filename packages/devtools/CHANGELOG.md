@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 1.1.0
+
+### Minor Changes
+
+- ab250a9: Release candidate 1
+
 ## 1.0.0
 
 ### Minor Changes

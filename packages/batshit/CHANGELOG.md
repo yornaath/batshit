@@ -1,5 +1,16 @@
 # @yornaath/batshit
 
+## 0.4.0
+
+### Minor Changes
+
+- ab250a9: Release candidate 1
+
+### Patch Changes
+
+- Updated dependencies [ab250a9]
+  - @yornaath/batshit-devtools@1.1.0
+
 ## 0.3.0
 
 ### Minor Changes

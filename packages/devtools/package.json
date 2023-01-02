@@ -1,6 +1,6 @@
 {
   "name": "@yornaath/batshit-devtools",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
