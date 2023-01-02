@@ -1278,6 +1278,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.26.2
     rollup: ^3.8.0
     rollup-plugin-typescript2: ^0.34.1
+    tslib: ^2.4.1
     turbo: ^1.6.3
     typescript: ^4.9.4
     vitest: ^0.26.2
@@ -4442,7 +4443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.4.0":
+"tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.4.1":
   version: 2.4.1
   resolution: "tslib@npm:2.4.1"
   checksum: 19480d6e0313292bd6505d4efe096a6b31c70e21cf08b5febf4da62e95c265c8f571f7b36fcc3d1a17e068032f59c269fab3459d6cd3ed6949eafecf64315fca

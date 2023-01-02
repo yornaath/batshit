@@ -7,6 +7,8 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
+    "declaration": true,
+    "declarationMap": true,
     "isolatedModules": true,
     "module": "ESNext",
     "moduleResolution": "node",
