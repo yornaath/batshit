@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build": "vite build"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.20.4",
