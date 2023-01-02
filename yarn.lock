@@ -1094,6 +1094,8 @@ __metadata:
 "@yornaath/batshit@workspace:*, @yornaath/batshit@workspace:packages/batshit":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit@workspace:packages/batshit"
+  dependencies:
+    "@yornaath/batshit-devtools": "workspace:*"
   languageName: unknown
   linkType: soft
 
