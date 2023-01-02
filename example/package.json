@@ -1,5 +1,6 @@
 {
   "name": "example",
+  "description": "Example project for batshit",
   "private": true,
   "version": "0.0.0",
   "type": "module",
