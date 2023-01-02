@@ -31,7 +31,7 @@ type User = { id: number; name: string };
 const users = create<User, number>({
   fetcher: async (ids) => {
     return client.users.where({
-      userId_in: ids,
+      id_in: ids,
     });
   },
   resolver: keyResolver("id"),
