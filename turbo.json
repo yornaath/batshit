@@ -4,6 +4,9 @@
     "build": {
       "outputs": ["./dist/**"]
     },
+    "build-example": {
+      "outputs": ["./dist/**"]
+    },
     "test": {
       "outputs": ["./dist/**"]
     },
