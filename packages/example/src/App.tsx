@@ -17,8 +17,8 @@ function App() {
         by 2 seconds. Clicking another load within the staggered window will
         stagger by another 2 seconds. <br /> <br />
         <i style={{ color: "rgb(70,70,70)" }}>
-          Use the batshit devtools in the bottom right corner to inspect batch
-          fetches.
+          Use the batshit devtools in the bottom right corner to inspect the
+          batching process.
         </i>
       </h3>
 
