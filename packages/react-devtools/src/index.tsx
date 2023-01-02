@@ -1,50 +1,146 @@
 import React from "react";
 import { EventEmitter } from "events";
-import { groupBy } from "lodash-es";
 import {
-  Devtools,
-  create,
+  createDevtools,
   BatshitEvent,
-} from "@yornaath/batshit/dist/devtools";
+  reduce,
+  BatshitDevtoolsState,
+} from "@yornaath/batshit-devtools";
 
 const emitter = new EventEmitter();
-const eventsMemory: BatshitEvent<any, any>[] = [];
+let allEvents: BatshitEvent<any, any>[] = [];
 
-window.__BATSHIT_DEVTOOLS__ = create((event) => {
-  eventsMemory.push(event);
+const subscribe = (callback: () => void) => {
+  emitter.addListener("event", callback);
+  return () => {
+    emitter.removeListener("event", callback);
+  };
+};
+
+const getSnapshot = () => allEvents;
+
+window.__BATSHIT_DEVTOOLS__ = createDevtools((event) => {
+  allEvents = [...allEvents, event];
   emitter.emit("event", event);
 });
 
 export const BatshitDevtools = () => {
   const events = React.useSyncExternalStore<BatshitEvent<any, any>[]>(
-    (callback) => {
-      emitter.addListener("event", callback);
-      return () => {
-        emitter.removeListener("event", callback);
-      };
-    },
-    () => eventsMemory
+    subscribe,
+    getSnapshot
   );
 
-  const eventsByBatcher = groupBy(events, (event) => event.name);
+  const state: BatshitDevtoolsState<any, any> = reduce(events);
 
   return (
-    <div>
-      {Object.entries(eventsByBatcher).map(([name, events]) => {
-        return <BatcherEvents name={name} events={events} />;
-      })}
+    <div
+      style={{
+        position: "fixed",
+        bottom: "10px",
+        right: "10px",
+        height: "600px",
+        width: "900px",
+        borderRadius: "4px",
+        background: "rgb(30,30,30)",
+        color: "rgb(250,250,250)",
+        fontFamily: "Menlo, monospace",
+      }}
+    >
+      <div
+        style={{
+          padding: "5px 8px",
+          background: "rgba(255,255,255, 0.07)",
+        }}
+      >
+        @yornaath/batshit - DEVTOOLS
+      </div>
+      <div>
+        {Object.entries(state).map(([name, batcherState]) => (
+          <div
+            style={{
+              fontSize: "13px",
+              borderBottom: "1px solid rgba(255,255,255, 0.1)",
+              paddingBottom: "5px",
+            }}
+          >
+            <h2 style={{ fontSize: "16px", padding: "5px 8px" }}>{name}</h2>
+            {Object.entries(batcherState).map(([seq, seqState]) => (
+              <Seq seq={seq} {...seqState} />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-export const BatcherEvents = (props: {
-  name: string;
-  events: BatshitEvent<any, any>[];
+const Seq = (props: {
+  seq: string;
+  batch: any[];
+  fetching: boolean;
+  data: any[];
+  error: Error | null;
 }) => {
+  const [expanded, setExpanded] = React.useState(false);
+
   return (
     <div>
-      <h2>{props.name}</h2>
-      {JSON.stringify(props.events, null, 2)}
+      <div
+        style={{
+          display: "flex",
+          alignContent: "center",
+          alignItems: "center",
+          height: "24px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "14px",
+            padding: "5px 8px",
+            marginRight: "5px",
+            backgroundColor: props.fetching
+              ? "yellow"
+              : props.error
+              ? "red"
+              : props.data
+              ? "blue"
+              : "gray",
+          }}
+        >
+          {props.seq}
+        </div>
+        <div style={{ flex: 1, marginRight: "5px", padding: "5px 8px" }}>
+          {JSON.stringify(props.batch)}
+        </div>
+        <div style={{ padding: "5px 8px" }}>
+          {(props.data || props.error) && (
+            <div
+              onClick={() => setExpanded(!expanded)}
+              style={{
+                background: props.data ? "green" : "red",
+                padding: "3px 6px",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              {props.data ? "data" : "error"} &#9660;
+            </div>
+          )}
+        </div>
+      </div>
+      {expanded && (
+        <div style={{ overflowY: "scroll", height: "500px" }}>
+          {props.data ? (
+            <div style={{ padding: "5px 8px" }}>
+              <div>
+                <pre>{JSON.stringify(props.data, null, 2)}</pre>
+              </div>
+            </div>
+          ) : props.error ? (
+            <div>{props.error.message}</div>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 };

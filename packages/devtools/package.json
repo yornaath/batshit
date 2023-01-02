@@ -1,12 +1,14 @@
 {
-  "name": "@yornaath/batshit-react-devtools",
-  "version": "0.0.3",
+  "name": "@yornaath/batshit-devtools",
+  "version": "0.2.11",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
-    "url": "https://github.com/yornaath"
+    "url": "https://github.com/yornaath/batshit"
   },
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
@@ -24,22 +26,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yornaath"
+    "url": "https://github.com/yornaath/batshit.git"
   },
   "packageManager": "yarn@3.3.1",
   "scripts": {
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
     "build": "rm -rf ./dist && rollup -c && tsc"
   },
-  "dependencies": {
-    "@yornaath/batshit": "*",
-    "lodash-es": "^4.17.21"
-  },
   "peerDependencies": {
-    "react": "*"
-  },
-  "devDependencies": {
-    "@types/lodash-es": "^4.17.6",
-    "@types/react": "^18.0.26",
-    "react": "^18.2.0"
+    "@yornaath/batshit": "workspace:*"
   }
 }

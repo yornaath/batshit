@@ -6,7 +6,7 @@ const pkg = await import(`${process.cwd()}/package.json`, {
 });
 
 export default {
-  input: "src/index.tsx",
+  input: "src/index.ts",
   external: [
     ...Object.keys(pkg.peerDependencies || {}),
     ...Object.keys(pkg.dependencies || {}),

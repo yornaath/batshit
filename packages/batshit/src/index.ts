@@ -1,5 +1,5 @@
+import type { DevtoolsListener } from "@yornaath/batshit-devtools";
 import { deferred } from "./deferred";
-
 /**
  * Batcher.
  * A batch manager that will batch requests for a certain data type within a given window.
@@ -81,7 +81,8 @@ export const create = <T, Q, R = T>(
 
   const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10);
 
-  const devtools = globalThis.__BATSHIT_DEVTOOLS__?.for(name);
+  const devtools: DevtoolsListener<any, any> | undefined =
+    globalThis.__BATSHIT_DEVTOOLS__?.for(name);
 
   let seq = 0;
   let batch = new Set<Q>();
@@ -90,7 +91,7 @@ export const create = <T, Q, R = T>(
   let start: number | null = null;
   let latest: number | null = null;
 
-  devtools?.create({ seq, config });
+  devtools?.create({ seq });
 
   const fetch = (query: Q): Promise<R> => {
     if (!start) start = Date.now();
