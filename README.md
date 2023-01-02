@@ -8,6 +8,11 @@ It fetches markets up front and then batches all liquidity pool fetches made fro
 
 [Codesandbox](https://codesandbox.io/s/yornaath-batshit-example-8f8q3w?file=/src/App.tsx)
 
+### Example with devtools
+Example using zeitgeist market and pool data with included devtools to inspect the batching process.
+
+[Vercel Example app](https://batshit-example.vercel.app/)
+
 ## Quickstart
 
 Here we are creating a simple batcher that will batch all fetches made within a window of 10 ms into one request.
