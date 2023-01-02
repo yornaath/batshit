@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.3.0
+
+### Minor Changes
+
+- eee2a1d: Devtools added.
+
 ## 0.2.11
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @yornaath/batshit
 
+## 1.0.0
+
+### Minor Changes
+
+- eee2a1d: Devtools added.
+
+### Patch Changes
+
+- Updated dependencies [eee2a1d]
+  - @yornaath/batshit@0.3.0
+
 ## 0.2.11
 
 ### Patch Changes

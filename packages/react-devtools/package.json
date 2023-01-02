@@ -1,12 +1,14 @@
 {
-  "name": "@yornaath/batshit-react-devtools",
-  "version": "0.0.3",
+  "name": "@yornaath/batshit-devtools-react",
+  "version": "0.1.0",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
     "url": "https://github.com/yornaath"
   },
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
