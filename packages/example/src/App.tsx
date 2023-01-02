@@ -28,7 +28,7 @@ function App() {
         ))}
       </div>
 
-      <BatshitDevtools />
+      <BatshitDevtools defaultOpen={true} />
     </div>
   );
 }

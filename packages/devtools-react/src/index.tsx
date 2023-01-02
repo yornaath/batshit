@@ -24,7 +24,7 @@ window.__BATSHIT_DEVTOOLS__ = createDevtools((event) => {
   notifier.emit("event", event);
 });
 
-export const BatshitDevtools = (props: { defaultOpen?: false }) => {
+export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
   const events = React.useSyncExternalStore<BatshitEvent<any, any>[]>(
     subscribe,
     getSnapshot
