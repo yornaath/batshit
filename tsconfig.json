@@ -18,12 +18,7 @@
     "skipLibCheck": true,
     "strict": true,
     "resolveJsonModule": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@yornaath/batshit": ["packages/batshit/src"],
-      "@yornaath/batshit-devtools": ["packages/devtools/src"],
-      "@yornaath/batshit-devtools-react": ["packages/devtools-react/src"]
-    }
+    "jsx": "react-jsx"
   },
   "exclude": ["node_modules", "dist", "tests"]
 }
