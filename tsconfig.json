@@ -3,7 +3,6 @@
   "display": "Default",
   "compilerOptions": {
     "baseUrl": "./",
-    "rootDir": "./",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
