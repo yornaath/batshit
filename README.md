@@ -10,7 +10,7 @@ It fetches markets up front and then batches all liquidity pool fetches made fro
 
 ### Example with devtools
 Example using zeitgeist market and pool data with included devtools to inspect the batching process.
-The example code can be found in [./packages/example](https://github.com/yornaath/batshit/tree/master/packages/example)
+The working live code for the example linked below can be found in [./packages/example](https://github.com/yornaath/batshit/tree/master/packages/example)
 
 [Vercel Example app](https://batshit-example.vercel.app/)
 
