@@ -100,11 +100,13 @@ export type ErrorEvent<T, Q> = {
 
 export type BatshitDevtoolsState<T, Q> = {
   [batcher: string]: {
-    [seq: number]: {
-      batch: Q[];
-      fetching: boolean;
-      data: T[];
-      error: Error | null;
+    sequences: {
+      [seq: number]: {
+        batch: Q[];
+        fetching: boolean;
+        data: T[];
+        error: Error | null;
+      };
     };
   };
 };
@@ -118,26 +120,29 @@ export const reduce = <T, Q>(
         ...state,
         [event.name]: {
           ...state?.[event.name],
-          [event.seq]: {
-            ...state?.[event.name]?.[event.seq],
-            batch:
-              event.type === "queue"
-                ? event.batch
-                : state?.[event.name]?.[event.seq]?.batch,
-            data:
-              event.type === "data"
-                ? event.data
-                : state?.[event.name]?.[event.seq]?.data,
-            error:
-              event.type === "error"
-                ? event.error
-                : state?.[event.name]?.[event.seq]?.error,
-            fetching:
-              event.type === "fetch"
-                ? true
-                : event.type === "data" || event.type === "error"
-                ? false
-                : state?.[event.name]?.[event.seq]?.fetching,
+          sequences: {
+            ...state?.[event.name]?.sequences,
+            [event.seq]: {
+              ...state?.[event.name]?.sequences[event.seq],
+              batch:
+                event.type === "queue"
+                  ? event.batch
+                  : state?.[event.name]?.sequences[event.seq]?.batch,
+              data:
+                event.type === "data"
+                  ? event.data
+                  : state?.[event.name]?.sequences[event.seq]?.data,
+              error:
+                event.type === "error"
+                  ? event.error
+                  : state?.[event.name]?.sequences[event.seq]?.error,
+              fetching:
+                event.type === "fetch"
+                  ? true
+                  : event.type === "data" || event.type === "error"
+                  ? false
+                  : state?.[event.name]?.sequences[event.seq]?.fetching,
+            },
           },
         },
       };

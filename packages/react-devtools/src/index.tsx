@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { EventEmitter } from "events";
 import {
   createDevtools,
@@ -34,6 +34,7 @@ export const BatshitDevtools = (props: { defaultOpen?: false }) => {
     props.defaultOpen ||
       globalThis.localStorage?.getItem("batshit-devtools-open") === "true"
   );
+
   const state: BatshitDevtoolsState<any, any> = reduce(events);
 
   useEffect(() => {
@@ -60,12 +61,13 @@ export const BatshitDevtools = (props: { defaultOpen?: false }) => {
     </div>
   ) : (
     <div
+      className="yornaath-batshit-devtools"
       style={{
         position: "fixed",
         bottom: "10px",
         right: "10px",
-        height: "600px",
         width: "900px",
+        height: "600px",
         borderRadius: "4px",
         background: "rgb(30,30,30)",
         color: "rgb(250,250,250)",
@@ -81,7 +83,7 @@ export const BatshitDevtools = (props: { defaultOpen?: false }) => {
           alignItems: "center",
         }}
       >
-        <div style={{ flex: 1 }}>@yornaath/batshit - DEVTOOLS</div>
+        <div style={{ flex: 1 }}>@yornaath/batshit - DEVTOOLS 🦇💩</div>
         <div
           style={{ color: "rgba(255,255,255, 0.16)", cursor: "pointer" }}
           onClick={() => setOpen(false)}
@@ -91,20 +93,69 @@ export const BatshitDevtools = (props: { defaultOpen?: false }) => {
       </div>
       <div>
         {Object.entries(state).map(([name, batcherState]) => (
-          <div
-            style={{
-              fontSize: "13px",
-              borderBottom: "1px solid rgba(255,255,255, 0.1)",
-              paddingBottom: "5px",
-            }}
-          >
-            <h2 style={{ fontSize: "16px", padding: "7px 9px" }}>{name}</h2>
-            {Object.entries(batcherState).map(([seq, seqState]) => (
-              <Seq seq={seq} {...seqState} />
-            ))}
-          </div>
+          <Batcher name={name} state={batcherState} />
         ))}
       </div>
+    </div>
+  );
+};
+
+const Batcher = (props: {
+  name: string;
+  state: {
+    sequences: {
+      [seq: number]: {
+        batch: any[];
+        fetching: boolean;
+        data: any[];
+        error: Error | null;
+      };
+    };
+  };
+}) => {
+  const latestSeqNumber = Object.keys(props.state.sequences)
+    .sort()
+    .reverse()[0];
+  const latest = props.state.sequences[Number(latestSeqNumber)];
+
+  return (
+    <div
+      style={{
+        fontSize: "13px",
+        borderBottom: "1px solid rgba(255,255,255, 0.1)",
+        paddingBottom: "5px",
+      }}
+    >
+      <h2
+        style={{
+          display: "flex",
+          alignContent: "center",
+          alignItems: "center",
+          fontSize: "16px",
+          padding: "7px 9px",
+        }}
+      >
+        <span style={{ marginRight: "8px" }}>{props.name}</span>
+        <div
+          style={{
+            borderRadius: 4,
+            height: 8,
+            width: 8,
+            marginRight: 8,
+            transition: "background 0.2s",
+            background: latest.fetching
+              ? "yellow"
+              : latest.error
+              ? "red"
+              : latest.data
+              ? "green"
+              : "gray",
+          }}
+        />
+      </h2>
+      {Object.entries(props.state.sequences).map(([seq, seqState]) => (
+        <Seq seq={seq} {...seqState} />
+      ))}
     </div>
   );
 };
@@ -135,12 +186,13 @@ const Seq = (props: {
             marginRight: "5px",
             width: "24px",
             textAlign: "center",
-            backgroundColor: props.fetching
+            transition: "background 0.2s",
+            background: props.fetching
               ? "yellow"
               : props.error
               ? "red"
               : props.data
-              ? "blue"
+              ? "green"
               : "gray",
           }}
         >

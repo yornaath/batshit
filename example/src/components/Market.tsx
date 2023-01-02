@@ -25,7 +25,11 @@ export const Market = (props: { market: Ztg.FullMarketFragment }) => {
       }}
     >
       <div style={{ marginRight: 8, width: 370 }}>{props.market.slug} </div>
-      <button style={{ marginRight: 8 }} onClick={onClickFetchPool}>
+      <button
+        disabled={isFetched || isFetching}
+        style={{ marginRight: 8 }}
+        onClick={onClickFetchPool}
+      >
         Fetch Volume
       </button>
       {(pool || isFetching) && (

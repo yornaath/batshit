@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import * as batshit from "@yornaath/batshit";
 import * as Ztg from "@zeitgeistpm/indexer";
 import { FullMarketFragment } from "@zeitgeistpm/indexer";
+import delay from "delay";
 import { zeitgeist } from "../sdk";
 
 const poolsBatcher = batshit.create<Ztg.FullPoolFragment, number>({
   fetcher: async (ids) => {
+    await delay(200);
     const { pools } = await zeitgeist.pools({
       where: {
         poolId_in: ids,
