@@ -19,7 +19,7 @@ const assetsBatcher = batshit.create<
     return assets;
   },
   resolver: (assets, query) => assets.filter((a) => a.poolId === query),
-  scheduler: batshit.bufferScheduler(600),
+  scheduler: batshit.bufferScheduler(1000),
   name: "assets",
 });
 

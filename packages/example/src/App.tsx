@@ -14,8 +14,8 @@ function App() {
 
       <h3 style={{ width: "900px", fontSize: "1em", marginBottom: "2em" }}>
         Loading liquidity for a pool will queue a fetch and stagger the fetching
-        by 2 seconds. Clicking another load within the staggered window will
-        stagger by another 2 seconds. <br /> <br />
+        by 1 second. Clicking another load within the staggered window will
+        stagger by another 1 second. <br /> <br />
         <i style={{ color: "rgb(70,70,70)" }}>
           Use the batshit devtools in the bottom right corner to inspect the
           batching process.

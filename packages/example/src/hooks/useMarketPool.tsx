@@ -16,7 +16,7 @@ const poolsBatcher = batshit.create<Ztg.FullPoolFragment, number>({
     return pools;
   },
   resolver: batshit.keyResolver("poolId"),
-  scheduler: batshit.bufferScheduler(600),
+  scheduler: batshit.bufferScheduler(1000),
   name: "pools",
 });
 
