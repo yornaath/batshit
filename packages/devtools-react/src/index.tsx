@@ -1,25 +1,11 @@
 import React, { useEffect } from "react";
 import { useDevtoolsState } from "./hooks/useDevtoolsState";
-
-const hasLocalOpenState =
-  globalThis.localStorage?.getItem("batshit-devtools-open") !== null;
-
-const localOpenState = hasLocalOpenState
-  ? JSON.parse(
-      globalThis.localStorage?.getItem("batshit-devtools-open") as string
-    )
-  : null;
+import { useOpenState } from "./hooks/useOpenState";
 
 export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
   const state = useDevtoolsState();
 
-  const [open, setOpen] = React.useState(
-    hasLocalOpenState ? localOpenState : props.defaultOpen ?? false
-  );
-
-  useEffect(() => {
-    globalThis.localStorage?.setItem("batshit-devtools-open", open.toString());
-  }, [open]);
+  const [open, setOpen] = useOpenState(props.defaultOpen);
 
   return !open ? (
     <div
