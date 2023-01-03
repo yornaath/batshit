@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { useDevtoolsState } from "./hooks/useDevtoolsState";
-import { useOpenState } from "./hooks/useOpenState";
+import { useLocalState } from "./hooks/useLocalState";
 
 export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
   const state = useDevtoolsState();
 
-  const [open, setOpen] = useOpenState(props.defaultOpen);
+  const [open, setOpen] = useLocalState<boolean>(
+    "batshit-devtools-open",
+    props.defaultOpen
+  );
 
   return !open ? (
     <div
