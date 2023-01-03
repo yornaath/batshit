@@ -99,16 +99,20 @@ export type ErrorEvent<T, Q> = {
 };
 
 export type BatshitDevtoolsState<T, Q> = {
-  [batcher: string]: {
-    sequences: {
-      [seq: number]: {
-        batch: Q[];
-        fetching: boolean;
-        data: T[];
-        error: Error | null;
-      };
-    };
+  [batcher: string]: BatcherState<T, Q>;
+};
+
+export type BatcherState<T, Q> = {
+  sequences: {
+    [seq: number]: SequenceState<T, Q>;
   };
+};
+
+export type SequenceState<T, Q> = {
+  batch: Q[];
+  fetching: boolean;
+  data: T[];
+  error: Error | null;
 };
 
 export const reduce = <T, Q>(
