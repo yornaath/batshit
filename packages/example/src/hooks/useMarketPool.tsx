@@ -16,8 +16,8 @@ const poolsBatcher = batshit.create<Ztg.FullPoolFragment, number>({
     return pools;
   },
   resolver: batshit.keyResolver("poolId"),
-  scheduler: batshit.bufferScheduler(2000),
-  name: "batcher:pools",
+  scheduler: batshit.bufferScheduler(600),
+  name: "pools",
 });
 
 export const useMarketPool = (

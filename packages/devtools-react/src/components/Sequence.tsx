@@ -6,6 +6,7 @@ export const Sequence = (props: {
   sequence: SequenceState<any, any>;
 }) => {
   const [expanded, setExpanded] = React.useState(false);
+  const batchStr = JSON.stringify(props.sequence.batch);
 
   return (
     <div>
@@ -15,6 +16,7 @@ export const Sequence = (props: {
           alignContent: "center",
           alignItems: "center",
           height: "24px",
+          paddingLeft: "9px",
         }}
       >
         <div
@@ -37,7 +39,8 @@ export const Sequence = (props: {
           {props.seq}
         </div>
         <div style={{ flex: 1, marginRight: "5px", padding: "7px 9px" }}>
-          {JSON.stringify(props.sequence.batch)}
+          {batchStr?.substring(0, 80)}
+          {batchStr?.length > 80 ? "..." : ""}
         </div>
         <div style={{ padding: "7px 9px" }}>
           {(props.sequence.data || props.sequence.error) && (
@@ -56,7 +59,10 @@ export const Sequence = (props: {
         </div>
       </div>
       {expanded && (
-        <div style={{ overflowY: "scroll", maxHeight: "500px" }}>
+        <div
+          className="batshit-osx-scrollbars"
+          style={{ overflowY: "scroll", maxHeight: "500px" }}
+        >
           {props.sequence.data ? (
             <div style={{ padding: "7px 9px" }}>
               <div>

@@ -1,10 +1,13 @@
 import { BatcherState } from "packages/devtools/dist";
+import { useState } from "react";
 import { Sequence } from "./Sequence";
 
 export const Batcher = (props: {
   name: string;
   state: BatcherState<any, any>;
 }) => {
+  const [expanded, setExpanded] = useState(true);
+
   const latestSeqNumber = Object.keys(props.state.sequences)
     .sort()
     .reverse()[0];
@@ -14,8 +17,8 @@ export const Batcher = (props: {
     <div
       style={{
         fontSize: "13px",
-        borderBottom: "1px solid rgba(255,255,255, 0.1)",
         paddingBottom: "5px",
+        overflow: "hidden",
       }}
     >
       <h2
@@ -27,27 +30,44 @@ export const Batcher = (props: {
           padding: "7px 9px",
         }}
       >
-        <span style={{ marginRight: "8px" }}>{props.name}</span>
         <div
           style={{
-            borderRadius: 4,
-            height: 8,
-            width: 8,
-            marginRight: 8,
-            transition: "background 0.2s",
-            background: latest.fetching
-              ? "yellow"
-              : latest.error
-              ? "red"
-              : latest.data
-              ? "green"
-              : "gray",
+            display: "flex",
+            alignContent: "center",
+            alignItems: "center",
+            flex: 1,
           }}
-        />
+        >
+          <span style={{ marginRight: "8px" }}>{props.name}</span>
+          <div
+            style={{
+              borderRadius: 4,
+              height: 8,
+              width: 8,
+              marginRight: 8,
+              transition: "background 0.2s",
+              background: latest.fetching
+                ? "yellow"
+                : latest.error
+                ? "red"
+                : latest.data
+                ? "green"
+                : "gray",
+            }}
+          />
+        </div>
+        <div
+          style={{ color: "rgba(255,255,255, 0.16)", cursor: "pointer" }}
+          onClick={() => setExpanded(!expanded)}
+        >
+          &#9660;
+        </div>
       </h2>
-      {Object.entries(props.state.sequences).map(([seq, seqState]) => (
-        <Sequence seq={seq} sequence={seqState} />
-      ))}
+      {expanded
+        ? Object.entries(props.state.sequences).map(([seq, seqState]) => (
+            <Sequence seq={seq} sequence={seqState} />
+          ))
+        : null}
     </div>
   );
 };

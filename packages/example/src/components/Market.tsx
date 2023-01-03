@@ -1,5 +1,6 @@
 import * as Ztg from "@zeitgeistpm/indexer";
 import { useState } from "react";
+import { useAssetsForPool } from "../hooks/useAssetsForPool";
 import { useMarketPool } from "../hooks/useMarketPool";
 
 export const Market = (props: { market: Ztg.FullMarketFragment }) => {
@@ -7,13 +8,22 @@ export const Market = (props: { market: Ztg.FullMarketFragment }) => {
 
   const {
     data: pool,
-    isFetched,
-    isFetching,
+    isFetched: poolIsFetched,
+    isFetching: poolIsFetching,
   } = useMarketPool(props.market, { enabled: shouldFetch });
+
+  const {
+    data: assets,
+    isFetched: assetsIsFetched,
+    isFetching: assetsIsFetching,
+  } = useAssetsForPool(pool);
 
   const onClickFetchPool = () => {
     setShouldFetch(true);
   };
+
+  const isFetched = poolIsFetched && assetsIsFetched;
+  const isFetching = poolIsFetching || assetsIsFetching;
 
   return (
     <div
@@ -44,7 +54,14 @@ export const Market = (props: { market: Ztg.FullMarketFragment }) => {
         />
       )}
       {pool && (
-        <div style={{}}>{Number(pool.volume / 10 ** 10).toFixed(2)}</div>
+        <div style={{ marginRight: 8 }}>
+          {Number(pool.volume / 10 ** 10).toFixed(2)}
+        </div>
+      )}
+      {assets && (
+        <div style={{}}>
+          <i>{assets.length} assets</i>
+        </div>
       )}
     </div>
   );

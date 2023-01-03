@@ -1,6 +1,8 @@
+import { useLayoutEffect } from "react";
 import { Batcher } from "./components/Batcher";
 import { useDevtoolsState } from "./hooks/useDevtoolsState";
 import { useLocalState } from "./hooks/useLocalState";
+import { styles } from "./styles";
 
 export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
   const state = useDevtoolsState();
@@ -9,6 +11,12 @@ export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
     "batshit-devtools-open",
     props.defaultOpen
   );
+
+  useLayoutEffect(() => {
+    let style = document.createElement("style");
+    style.textContent = styles;
+    document.head.append(style);
+  }, []);
 
   return !open ? (
     <div
@@ -41,13 +49,17 @@ export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
         background: "rgb(30,30,30)",
         color: "rgb(250,250,250)",
         fontFamily: "Menlo, monospace",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
       }}
     >
       <div
         style={{
-          padding: "7px 9px",
+          padding: "7px 22px 7px 9px",
           background: "rgba(255,255,255, 0.07)",
           display: "flex",
+          height: "30px",
           alignContent: "center",
           alignItems: "center",
         }}
@@ -60,7 +72,13 @@ export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
           &#9660;
         </div>
       </div>
-      <div>
+      <div
+        className="batshit-osx-scrollbars"
+        style={{
+          flex: 1,
+          overflowY: "scroll",
+        }}
+      >
         {Object.entries(state).map(([name, batcherState]) => (
           <Batcher name={name} state={batcherState} />
         ))}
