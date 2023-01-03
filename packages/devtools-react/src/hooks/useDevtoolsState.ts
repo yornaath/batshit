@@ -1,6 +1,6 @@
 import {
   BatshitDevtoolsState,
-  createDevtools,
+  injectDevtools,
   reduce,
 } from "@yornaath/batshit-devtools";
 import React from "react";
@@ -10,7 +10,7 @@ let state: BatshitDevtoolsState<any, any> = {};
 
 const getSnapshot = () => state;
 
-window.__BATSHIT_DEVTOOLS__ = createDevtools((event) => {
+injectDevtools((event) => {
   state = reduce([event], state);
   subscribe?.();
 });

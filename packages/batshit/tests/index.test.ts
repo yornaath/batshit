@@ -1,3 +1,4 @@
+import { injectDevtools } from "@yornaath/batshit-devtools";
 import { setTimeout as setTimeoutP } from "timers/promises";
 import { describe, expect, test } from "vitest";
 import {
@@ -8,7 +9,7 @@ import {
 } from "../src/index";
 import * as mock from "./mock";
 
-describe("batcher", () => {
+const tests = () => {
   test("fetching items should work", async () => {
     const batcher = create<mock.User, number>({
       fetcher: async (ids) => {
@@ -224,4 +225,10 @@ describe("batcher", () => {
 
     expect(fetchCounter).toBe(1);
   });
+};
+
+describe("batcher", tests);
+describe("batcher-with-devtools", () => {
+  injectDevtools(() => {});
+  return tests();
 });
