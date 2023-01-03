@@ -8,22 +8,30 @@ It fetches markets up front and then batches all liquidity pool fetches made fro
 
 [Codesandbox](https://codesandbox.io/s/yornaath-batshit-example-8f8q3w?file=/src/App.tsx)
 
+### Example with devtools
+Example using zeitgeist market and pool data with included devtools to inspect the batching process.
+The working live code for the example linked below can be found in [./packages/example](https://github.com/yornaath/batshit/tree/master/packages/example)
+
+[Vercel Example app](https://batshit-example.vercel.app/)
+
+## Install
+```bash
+yarn add @yornaath/batshit
+```
+
 ## Quickstart
 
 Here we are creating a simple batcher that will batch all fetches made within a window of 10 ms into one request.
 
 ```ts
-import { Batcher, keyResolver, windowScheduler } from "@yornaath/batshit";
-
-let fetchCalls = 0;
+import { create, keyResolver, windowScheduler } from "@yornaath/batshit";
 
 type User = { id: number; name: string };
 
-const users = Batcher<User, number>({
+const users = create<User, number>({
   fetcher: async (ids) => {
-    fetchCalls++;
     return client.users.where({
-      userId_in: ids,
+      id_in: ids,
     });
   },
   resolver: keyResolver("id"),
@@ -38,30 +46,26 @@ const alice = users.fetch(2);
 
 const bobUndtAlice = await Promise.all([bob, alice]);
 
-fetchCalls === 1;
-
 await delay(100);
 
 /**
- * New Requests will be batched in a another call since not within the timeframe.
+ * New Requests will be batched in a another call since not within the first timeframe.
  */
 const joe = users.fetch(3);
 const margareth = users.fetch(4);
 
 const joeUndtMargareth = await Promise.all([joe, margareth]);
-
-fetchCalls === 2;
 ```
 
 ## React(query) Example
 
-Here we are also creating a simple batcher that will batch all fetches made within a window of 10 ms into one request since all UserItem components will be rendered and most likely make their queries within the same window of 10 ms.
+Here we are also creating a simple batcher that will batch all fetches made within a window of 10 ms into one request. Since all <UserDetails /> items are rendered in one go their individual fetches will be batched into one request.
 
 ```ts
 import { useQuery } from "react-query";
-import { Batcher, windowScheduler } from "@yornaath/batshit";
+import { create, windowScheduler } from "@yornaath/batshit";
 
-const users = Batcher<User, number>({
+const users = create<User, number>({
   fetcher: async (ids) => {
     return client.users.where({
       userId_in: ids,
@@ -125,4 +129,31 @@ const [alicesPosts, bobsPost] = await Promise.all([
   userposts.fetch({authorId: 1})
   userposts.fetch({authorId: 2})
 ]);
+```
+
+# React Devtools
+
+Tools to debug and inspect the batching process can be found in the [@yornaath/batshit-devtools-react](https://www.npmjs.com/package/@yornaath/batshit-devtools-react) package.
+
+```bash
+yarn add @yornaath/batshit-devtools @yornaath/batshit-devtools-react
+```
+
+```ts
+import { create, keyResolver, windowScheduler } from "@yornaath/batshit";
+import BatshitDevtools from "@yornaath/batshit-devtools-react";
+
+const batcher = create<Data, number>({
+  fetcher: async (queries) => {...},
+  scheduler: windowScheduler(10),
+  resolver: keyResolver("id"),
+  name: "batcher:data" // used in the devtools to identify a particular batcher.
+});
+
+const App = () => {
+  <div>
+    <Data batcher={batcher} />
+    <BatshitDevtools />
+  </div>
+}
 ```
