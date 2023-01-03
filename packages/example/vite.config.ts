@@ -7,7 +7,6 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      events: "rollup-plugin-node-polyfills/polyfills/events",
       "@yornaath/batshit/*": path.resolve(process.cwd(), "../batshit/src/*"),
       "@yornaath/batshit-devtools/*": path.resolve(
         process.cwd(),

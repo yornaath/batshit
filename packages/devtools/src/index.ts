@@ -112,7 +112,8 @@ export type BatshitDevtoolsState<T, Q> = {
 };
 
 export const reduce = <T, Q>(
-  events: BatshitEvent<Q, T>[]
+  events: BatshitEvent<Q, T>[],
+  initialState: BatshitDevtoolsState<T, Q> = {}
 ): BatshitDevtoolsState<T, Q> => {
   return events.reduce(
     (state: BatshitDevtoolsState<T, Q>, event: BatshitEvent<Q, T>) => {
@@ -147,6 +148,6 @@ export const reduce = <T, Q>(
         },
       };
     },
-    {}
+    initialState
   );
 };

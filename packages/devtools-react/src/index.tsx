@@ -1,41 +1,13 @@
 import React, { useEffect } from "react";
-import { EventEmitter } from "events";
-import {
-  createDevtools,
-  BatshitEvent,
-  reduce,
-  BatshitDevtoolsState,
-} from "@yornaath/batshit-devtools";
-
-const notifier = new EventEmitter();
-let allEvents: BatshitEvent<any, any>[] = [];
-
-const subscribe = (callback: () => void) => {
-  notifier.addListener("event", callback);
-  return () => {
-    notifier.removeListener("event", callback);
-  };
-};
-
-const getSnapshot = () => allEvents;
-
-window.__BATSHIT_DEVTOOLS__ = createDevtools((event) => {
-  allEvents = [...allEvents, event];
-  notifier.emit("event", event);
-});
+import { useDevtoolsState } from "./hooks/useDevtoolsState";
 
 export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
-  const events = React.useSyncExternalStore<BatshitEvent<any, any>[]>(
-    subscribe,
-    getSnapshot
-  );
+  const state = useDevtoolsState();
 
   const [open, setOpen] = React.useState(
     props.defaultOpen ||
       globalThis.localStorage?.getItem("batshit-devtools-open") === "true"
   );
-
-  const state: BatshitDevtoolsState<any, any> = reduce(events);
 
   useEffect(() => {
     globalThis.localStorage?.setItem("batshit-devtools-open", open.toString());
