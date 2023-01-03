@@ -61,7 +61,7 @@ const joeUndtMargareth = await Promise.all([joe, margareth]);
 
 Here we are also creating a simple batcher that will batch all fetches made within a window of 10 ms into one request. Since all <UserDetails /> items are rendered in one go their individual fetches will be batched into one request.
 
-**Note: a batcher for a group of items should only be created once. So creating them in hooks wont work as intended.**
+**Note: a batcher for a group of items should only be created once. So creating them inside hooks wont work as intended.**
 
 ```ts
 import { useQuery } from "react-query";
