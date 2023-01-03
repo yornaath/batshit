@@ -40,7 +40,7 @@ export const Market = (props: { market: Ztg.FullMarketFragment }) => {
         style={{ marginRight: 8 }}
         onClick={onClickFetchPool}
       >
-        Fetch Volume
+        Load data
       </button>
       {(pool || isFetching) && (
         <div
@@ -55,7 +55,8 @@ export const Market = (props: { market: Ztg.FullMarketFragment }) => {
       )}
       {pool && (
         <div style={{ marginRight: 8 }}>
-          {Number(pool.volume / 10 ** 10).toFixed(2)}
+          {Number(pool.volume / 10 ** 10).toFixed(2)} VOL
+          {assets && ","}
         </div>
       )}
       {assets && (
