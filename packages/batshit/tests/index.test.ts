@@ -225,6 +225,8 @@ const tests = () => {
 
     expect(fetchCounter).toBe(1);
   });
+
+  test("share", async () => {});
 };
 
 describe("batcher", tests);

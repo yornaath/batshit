@@ -7,5 +7,6 @@
   "access": "restricted",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
+  "updateInternalDependents": "allways",
   "ignore": ["example"]
 }

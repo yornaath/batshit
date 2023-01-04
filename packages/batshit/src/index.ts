@@ -1,13 +1,14 @@
 import type { DevtoolsListener } from "@yornaath/batshit-devtools";
-import { deferred } from "./deferred";
+import { Deferred, deferred } from "./deferred";
 /**
  * Batcher.
  * A batch manager that will batch requests for a certain data type within a given window.
  *
  * @generic T - The type of the data.
  * @generic Q - item query type
+ * @generic C - the context of the batcher passed to the fetcher function
  */
-export type Batcher<T, Q> = {
+export type Batcher<T, Q, R = T> = {
   /**
    * Schedule a get request for a query.
    *
@@ -16,7 +17,7 @@ export type Batcher<T, Q> = {
    * @param query Q
    * @returns Promise<T>
    */
-  fetch: (query: Q) => Promise<T>;
+  fetch: (query: Q) => Promise<R>;
 };
 
 /**
@@ -24,15 +25,16 @@ export type Batcher<T, Q> = {
  *
  * @generic T - The type of the data.
  * @generic Q - item query type
+ * @generic C - the context of the batcher passed to the fetcher function
  */
-export type BatcherConfig<T, Q, R = T> = {
+export type BatcherConfig<T, Q, R = T, C = any> = {
   /**
    * The function that makes the batched request for the current batch queries
    *
    * @param queries Q[]
    * @returns Promise<T[]
    */
-  fetcher: (queries: Q[]) => Promise<T[]>;
+  fetcher: (queries: Q[], ctx?: C) => Promise<T[]>;
   /**
    * The scheduling function.
    */
@@ -49,6 +51,8 @@ export type BatcherConfig<T, Q, R = T> = {
    * Display name of the batcher. Used for debugging and devtools.
    */
   name?: string;
+
+  ctx?: C;
 };
 
 /**
@@ -65,18 +69,29 @@ export type BatcherScheduler = {
   (start: number, latest: number): number;
 };
 
+export type BatcherMemory<T, Q> = {
+  seq: number;
+  batch: Set<Q>;
+  currentRequest: Deferred<T[]>;
+  timer?: NodeJS.Timeout | undefined;
+  start?: number | null;
+  latest?: number | null;
+};
+
 /**
  * Create a batch manager for a given collection of a data type.
  * Will batch all .get calls given inside a scheduled time window into a singel request.
  *
  * @generic T - The type of the data.
  * @generic Q - item query type
+ * @generic C - the context of the batcher passed to the fetcher function
  * @param config BatcherConfig<T, Q>
  * @returns Batcher<T, Q>
  */
-export const create = <T, Q, R = T>(
-  config: BatcherConfig<T, Q, R>
-): Batcher<ReturnType<typeof config["resolver"]>, Q> => {
+export const create = <T, Q, R = T, C = any>(
+  config: BatcherConfig<T, Q, R, C>,
+  memory?: BatcherMemory<T, Q>
+): Batcher<T, Q, ReturnType<typeof config["resolver"]>> => {
   const name = config.name ?? `batcher:${Math.random().toString(16).slice(2)})`;
 
   const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10);
@@ -84,60 +99,64 @@ export const create = <T, Q, R = T>(
   const devtools: DevtoolsListener<any, any> | undefined =
     globalThis.__BATSHIT_DEVTOOLS__?.for(name);
 
-  let seq = 0;
-  let batch = new Set<Q>();
-  let currentRequest = deferred<T[]>();
-  let timer: NodeJS.Timeout | undefined = undefined;
-  let start: number | null = null;
-  let latest: number | null = null;
+  let mem: BatcherMemory<T, Q> = memory ?? {
+    seq: 0,
+    batch: new Set<Q>(),
+    currentRequest: deferred<T[]>(),
+    timer: undefined,
+    start: null,
+    latest: null,
+  };
 
-  devtools?.create({ seq });
+  devtools?.create({ seq: mem.seq });
 
   const fetch = (query: Q): Promise<R> => {
-    if (!start) start = Date.now();
-    latest = Date.now();
+    if (!mem.start) mem.start = Date.now();
+    mem.latest = Date.now();
 
-    batch.add(query);
-    clearTimeout(timer);
+    mem.batch.add(query);
+    clearTimeout(mem.timer);
 
-    const scheduled = scheduler(start, latest);
+    const scheduled = scheduler(mem.start, mem.latest);
 
     devtools?.queue({
-      seq,
+      seq: mem.seq,
       query,
-      batch: [...batch],
+      batch: [...mem.batch],
       scheduled,
-      latest,
-      start,
+      latest: mem.latest,
+      start: mem.start,
     });
 
-    timer = setTimeout(() => {
-      const currentSeq = seq;
-      const req = config.fetcher([...batch]);
-      const _currentRequest = currentRequest;
+    mem.timer = setTimeout(() => {
+      const currentSeq = mem.seq;
+      const req = config.fetcher([...mem.batch], config.ctx);
+      const currentRequest = mem.currentRequest;
 
-      devtools?.fetch({ seq: currentSeq, batch: [...batch] });
+      devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
 
-      batch = new Set();
-      currentRequest = deferred<T[]>();
-      timer = undefined;
-      start = null;
-      latest = null;
+      mem.batch = new Set();
+      mem.currentRequest = deferred<T[]>();
+      mem.timer = undefined;
+      mem.start = null;
+      mem.latest = null;
 
       req
         .then((data) => {
           devtools?.data({ seq: currentSeq, data });
-          _currentRequest.resolve(data);
+          currentRequest.resolve(data);
         })
         .catch((error) => {
           devtools?.error({ seq: currentSeq, error });
-          _currentRequest.reject(error);
+          currentRequest.reject(error);
         });
 
-      seq++;
+      mem.seq++;
     }, scheduled);
 
-    return currentRequest.value.then((items) => config.resolver(items, query));
+    return mem.currentRequest.value.then((items) =>
+      config.resolver(items, query)
+    );
   };
 
   return { fetch };

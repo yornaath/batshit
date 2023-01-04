@@ -1,10 +1,10 @@
 
  RUN  v0.26.2 /Users/jorntangen/progg/batshit/packages/batshit
 
- ✓ tests/index.test.ts  (14 tests) 355ms
+ ✓ tests/index.test.ts  (16 tests) 355ms
 
  Test Files  1 passed (1)
-      Tests  14 passed (14)
-   Start at  11:55:29
-   Duration  910ms (transform 258ms, setup 0ms, collect 65ms, tests 355ms)
+      Tests  16 passed (16)
+   Start at  15:56:34
+   Duration  933ms (transform 268ms, setup 0ms, collect 69ms, tests 355ms)
 
