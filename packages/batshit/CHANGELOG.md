@@ -1,5 +1,16 @@
 # @yornaath/batshit
 
+## 0.5.0
+
+### Minor Changes
+
+- 681664c: Bump
+
+### Patch Changes
+
+- Updated dependencies [681664c]
+  - @yornaath/batshit-devtools@1.2.0
+
 ## 0.4.0
 
 ### Minor Changes
