@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 1.2.1
+
+### Patch Changes
+
+- b582550: Versions
+
 ## 1.2.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @yornaath/batshit
 
+## 0.5.1
+
+### Patch Changes
+
+- b582550: Versions
+- Updated dependencies [b582550]
+  - @yornaath/batshit-devtools@1.2.1
+
 ## 0.5.0
 
 ### Minor Changes

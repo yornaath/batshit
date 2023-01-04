@@ -1,6 +1,6 @@
 {
   "name": "@yornaath/batshit",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
@@ -30,7 +30,7 @@
   },
   "packageManager": "yarn@3.3.1",
   "dependencies": {
-    "@yornaath/batshit-devtools": "*"
+    "@yornaath/batshit-devtools": "workspace:*"
   },
   "scripts": {
     "test": "vitest run",
