@@ -44,7 +44,7 @@ export const Sequence = (props: {
             textAlign: "center",
           }}
         >
-          {props.sequence.batch.length}
+          {props.sequence?.batch?.length}
         </div>
         <div style={{ flex: 1, marginRight: "5px", padding: "7px 9px" }}>
           {batchStr?.substring(0, 80)}

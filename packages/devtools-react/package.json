@@ -1,6 +1,6 @@
 {
   "name": "@yornaath/batshit-devtools-react",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",

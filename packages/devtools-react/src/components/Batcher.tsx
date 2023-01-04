@@ -65,7 +65,7 @@ export const Batcher = (props: {
       </h2>
       {expanded
         ? Object.entries(props.state.sequences).map(([seq, seqState]) => (
-            <Sequence seq={seq} sequence={seqState} />
+            <Sequence key={seq} seq={seq} sequence={seqState} />
           ))
         : null}
     </div>

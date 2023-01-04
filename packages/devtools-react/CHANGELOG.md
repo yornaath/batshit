@@ -1,5 +1,17 @@
 # @yornaath/batshit-devtools-react
 
+## 0.5.4
+
+### Patch Changes
+
+- Fix
+
+## 0.5.3
+
+### Patch Changes
+
+- Show number of items in batch.
+
 ## 0.5.2
 
 ### Patch Changes
