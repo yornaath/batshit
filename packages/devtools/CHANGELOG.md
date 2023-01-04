@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 1.3.0
+
+### Minor Changes
+
+- 2980218: Yes
+
 ## 1.2.1
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @yornaath/batshit
 
+## 0.6.0
+
+### Minor Changes
+
+- 2980218: Yes
+
+### Patch Changes
+
+- Updated dependencies [2980218]
+  - @yornaath/batshit-devtools@1.3.0
+
 ## 0.5.1
 
 ### Patch Changes
