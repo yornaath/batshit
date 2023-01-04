@@ -1,5 +1,11 @@
 # @yornaath/batshit-devtools-react
 
+## 0.5.2
+
+### Patch Changes
+
+- Fix getServerSnapshot
+
 ## 0.5.1
 
 ### Patch Changes

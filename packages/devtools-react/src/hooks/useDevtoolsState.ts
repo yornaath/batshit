@@ -24,6 +24,7 @@ export const useDevtoolsState = () => {
         subscribe = undefined;
       };
     },
+    getSnapshot,
     getServerSnapshot
   );
 };
