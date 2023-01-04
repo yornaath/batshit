@@ -9,6 +9,7 @@ let subscribe: (() => void) | undefined;
 let state: BatshitDevtoolsState<any, any> = {};
 
 const getSnapshot = () => state;
+const getServerSnapshot = () => state;
 
 injectDevtools((event) => {
   state = reduce([event], state);
@@ -23,6 +24,6 @@ export const useDevtoolsState = () => {
         subscribe = undefined;
       };
     },
-    getSnapshot
+    getServerSnapshot
   );
 };

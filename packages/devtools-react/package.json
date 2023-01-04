@@ -1,6 +1,6 @@
 {
   "name": "@yornaath/batshit-devtools-react",
-  "version": "0.4.0",
+  "version": "0.5.1",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
@@ -33,8 +33,8 @@
     "build": "rm -rf ./dist && rollup -c && tsc"
   },
   "dependencies": {
-    "@yornaath/batshit": "^0.6.0",
-    "@yornaath/batshit-devtools": "^1.3.0",
+    "@yornaath/batshit": "^0.7.1",
+    "@yornaath/batshit-devtools": "^1.4.1",
     "lodash-es": "^4.17.21"
   },
   "peerDependencies": {

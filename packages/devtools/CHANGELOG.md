@@ -1,5 +1,17 @@
 # @yornaath/batshit
 
+## 1.4.1
+
+### Patch Changes
+
+- Provide getServerSnapshot for devtools state
+
+## 1.4.0
+
+### Minor Changes
+
+- yes
+
 ## 1.3.0
 
 ### Minor Changes

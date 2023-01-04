@@ -1,5 +1,24 @@
 # @yornaath/batshit
 
+## 0.7.1
+
+### Patch Changes
+
+- Provide getServerSnapshot for devtools state
+- Updated dependencies
+  - @yornaath/batshit-devtools@1.4.1
+
+## 0.7.0
+
+### Minor Changes
+
+- yes
+
+### Patch Changes
+
+- Updated dependencies
+  - @yornaath/batshit-devtools@1.4.0
+
 ## 0.6.0
 
 ### Minor Changes

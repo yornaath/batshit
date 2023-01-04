@@ -1,5 +1,26 @@
 # @yornaath/batshit-devtools-react
 
+## 0.5.1
+
+### Patch Changes
+
+- Provide getServerSnapshot for devtools state
+- Updated dependencies
+  - @yornaath/batshit-devtools@1.4.1
+  - @yornaath/batshit@0.7.1
+
+## 0.5.0
+
+### Minor Changes
+
+- yes
+
+### Patch Changes
+
+- Updated dependencies
+  - @yornaath/batshit@0.7.0
+  - @yornaath/batshit-devtools@1.4.0
+
 ## 0.4.0
 
 ### Minor Changes
