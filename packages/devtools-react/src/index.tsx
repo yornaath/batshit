@@ -80,7 +80,7 @@ export const BatshitDevtools = (props: { defaultOpen?: boolean }) => {
         }}
       >
         {Object.entries(state).map(([name, batcherState]) => (
-          <Batcher name={name} state={batcherState} />
+          <Batcher key={name} name={name} state={batcherState} />
         ))}
       </div>
     </div>

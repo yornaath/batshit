@@ -111,6 +111,52 @@ const UserList = () => {
 };
 ```
 
+### Fethcing with needed context
+
+If the batch fetcher needs some context like an sdk or client to make its fetching you can use a memoizer to make sure that you reuse a batcher for the given context in the hook calls.
+
+```ts
+import { useQuery } from "@tanstack/react-query";
+import { memoize } from "lodash-es";
+import * as batshit from "@yornaath/batshit";
+
+export const key = "markets";
+
+const batcher = memoize((sdk: Sdk<IndexerContext>) => {
+  return batshit.create<Market, number>({
+    name: key,
+    fetcher: async (ids) => {
+      const { markets } = await sdk.markets({
+        where: {
+          marketId_in: ids,
+        },
+      });
+      return markets;
+    },
+    scheduler: batshit.windowScheduler(10),
+    resolver: batshit.keyResolver("marketId"),
+  });
+});
+
+export const useMarket = (marketId: number) => {
+  const [sdk, id] = useSdk();
+
+  const query = useQuery(
+    [id, key, marketId],
+    async () => {
+      if(sdk) {
+        return batcher(sdk).fetch(marketId);
+      }
+    },
+    {
+      enabled: Boolean(sdk),
+    },
+  );
+
+  return query;
+};
+```
+
 # Custom Batch Resolver
 
 This batcher will fetch all posts for multiple users in one request and resolve the correct list of posts for the discrete queries.

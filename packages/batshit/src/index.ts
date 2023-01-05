@@ -27,14 +27,14 @@ export type Batcher<T, Q, R = T> = {
  * @generic Q - item query type
  * @generic C - the context of the batcher passed to the fetcher function
  */
-export type BatcherConfig<T, Q, R = T, C = any> = {
+export type BatcherConfig<T, Q, R = T> = {
   /**
    * The function that makes the batched request for the current batch queries
    *
    * @param queries Q[]
    * @returns Promise<T[]
    */
-  fetcher: (queries: Q[], ctx?: C) => Promise<T[]>;
+  fetcher: (queries: Q[]) => Promise<T[]>;
   /**
    * The scheduling function.
    */
@@ -51,8 +51,6 @@ export type BatcherConfig<T, Q, R = T, C = any> = {
    * Display name of the batcher. Used for debugging and devtools.
    */
   name?: string;
-
-  ctx?: C;
 };
 
 /**
@@ -88,8 +86,8 @@ export type BatcherMemory<T, Q> = {
  * @param config BatcherConfig<T, Q>
  * @returns Batcher<T, Q>
  */
-export const create = <T, Q, R = T, C = any>(
-  config: BatcherConfig<T, Q, R, C>,
+export const create = <T, Q, R = T>(
+  config: BatcherConfig<T, Q, R>,
   memory?: BatcherMemory<T, Q>
 ): Batcher<T, Q, ReturnType<typeof config["resolver"]>> => {
   const name = config.name ?? `batcher:${Math.random().toString(16).slice(2)})`;
@@ -130,7 +128,7 @@ export const create = <T, Q, R = T, C = any>(
 
     mem.timer = setTimeout(() => {
       const currentSeq = mem.seq;
-      const req = config.fetcher([...mem.batch], config.ctx);
+      const req = config.fetcher([...mem.batch]);
       const currentRequest = mem.currentRequest;
 
       devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
