@@ -200,7 +200,6 @@ const batcher = create<Data, number>({
 
 const App = () => {
   <div>
-    <Data batcher={batcher} />
     <BatshitDevtools />
   </div>
 }
