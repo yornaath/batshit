@@ -165,18 +165,20 @@ export const create = <T, Q, R = T>(
  * Create a euquality check to check if the query matches a given key on the item data.
  *
  * @param key keyof T
- * @returns (item:T extends Array<any>, query: Q) => boolean
+ * @returns (item:T extends Array<A>, query: Q) => A
  */
 export const keyResolver =
-  <T extends Array<any>, Q>(key: T extends Array<infer A> ? keyof A : never) =>
-  (items: T, query: Q) =>
-    items.find((item) => item[key] == query) as T;
+  <T extends Array<any>, Q, R = T extends Array<infer A> ? A : never>(
+    key: T extends Array<infer A> ? keyof A : never
+  ) =>
+  (items: T, query: Q): R =>
+    items.find((item) => item[key] == query);
 
 /**
  * Resolve by record index when response is an object.
  * Create a euquality check to check if the query matches a given key on the item data.
  *
- * @returns (item:T extends Array<any>, query: Q) => boolean
+ * @returns (item:T extends Record<_, A>, query: Q) => A
  */
 export const indexedResolver =
   <T extends Record<any, any>, Q>() =>
