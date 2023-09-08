@@ -6,13 +6,14 @@ import {
   bufferScheduler,
   windowScheduler,
   keyResolver,
+  indexedResolver,
 } from "../src/index";
 import * as mock from "./mock";
 
 const tests = () => {
   test("fetching items should work", async () => {
-    const batcher = create<mock.User, number>({
-      fetcher: async (ids) => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
         return mock.usersByIds(ids);
       },
       resolver: keyResolver("id"),
@@ -36,8 +37,8 @@ const tests = () => {
   test("fetching items be batched in the same time window", async () => {
     let fetchCounter = 0;
 
-    const batcher = create<mock.User, number>({
-      fetcher: async (ids) => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
         fetchCounter++;
         return mock.usersByIds(ids);
       },
@@ -70,8 +71,8 @@ const tests = () => {
 
   test("windowing", async () => {
     let fetchCounter = 0;
-    const batcher = create<mock.User, number>({
-      fetcher: async (ids) => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
         fetchCounter++;
         return mock.usersByIds(ids);
       },
@@ -99,43 +100,13 @@ const tests = () => {
 
   test("debouncing", async () => {
     let fetchCounter = 0;
-    const batcher = create<mock.User, number>({
-      fetcher: async (ids) => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
         fetchCounter++;
         return mock.usersByIds(ids);
       },
       resolver: keyResolver("id"),
       scheduler: bufferScheduler(10),
-    });
-
-    const one = batcher.fetch(1);
-    await setTimeoutP(2);
-    const two = batcher.fetch(2);
-    await setTimeoutP(3);
-    const three = batcher.fetch(3);
-    await setTimeoutP(5);
-    const four = batcher.fetch(4);
-
-    const all = await Promise.all([one, two, three, four]);
-
-    expect(fetchCounter).toBe(1);
-    expect(all).toEqual([
-      { id: 1, name: "Bob" },
-      { id: 2, name: "Alice" },
-      { id: 3, name: "Sally" },
-      { id: 4, name: "John" },
-    ]);
-  });
-
-  test("with queryHasher config", async () => {
-    let fetchCounter = 0;
-    const batcher = create<mock.User, number>({
-      fetcher: async (ids) => {
-        fetchCounter++;
-        return mock.usersByIds(ids);
-      },
-      scheduler: bufferScheduler(10),
-      resolver: keyResolver("id"),
     });
 
     const one = batcher.fetch(1);
@@ -161,8 +132,8 @@ const tests = () => {
     let fetchCounter = 0;
     let fetchedIds!: number[];
 
-    const batcher = create<mock.User, number>({
-      fetcher: async (ids) => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
         fetchCounter++;
         fetchedIds = ids;
         return mock.usersByIds(ids);
@@ -195,8 +166,8 @@ const tests = () => {
 
   test("custom resolver", async () => {
     let fetchCounter = 0;
-    const batcher = create<mock.Post, { authorId: number }, mock.Post[]>({
-      fetcher: async (queries) => {
+    const batcher = create({
+      fetcher: async (queries: { authorId: number }[]) => {
         fetchCounter++;
         return mock.postsByAuthorId(queries.map((q) => q.authorId));
       },
@@ -226,7 +197,38 @@ const tests = () => {
     expect(fetchCounter).toBe(1);
   });
 
-  test("share", async () => {});
+  test("record responses", async () => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
+        const users = mock.usersByIds(ids);
+        const usersRecord = users.reduce<Record<number, mock.User>>(
+          (index, user) => {
+            return {
+              ...index,
+              [user.id]: user,
+            };
+          },
+          {}
+        );
+        return usersRecord;
+      },
+      resolver: indexedResolver(),
+    });
+
+    const two = await batcher.fetch(2);
+
+    expect(two).toEqual({ id: 2, name: "Alice" });
+
+    const all = await Promise.all([
+      batcher.fetch(1),
+      batcher.fetch(2),
+      batcher.fetch(3),
+      batcher.fetch(4),
+      batcher.fetch(5),
+    ]);
+
+    expect(all).toEqual(mock.users);
+  });
 };
 
 describe("batcher", tests);

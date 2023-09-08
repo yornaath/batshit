@@ -28,8 +28,8 @@ import { create, keyResolver, windowScheduler } from "@yornaath/batshit";
 
 type User = { id: number; name: string };
 
-const users = create<User, number>({
-  fetcher: async (ids) => {
+const users = create({
+  fetcher: async (ids: number[]) => {
     return client.users.where({
       id_in: ids,
     });
@@ -67,8 +67,8 @@ Here we are also creating a simple batcher that will batch all fetches made with
 import { useQuery } from "react-query";
 import { create, windowScheduler } from "@yornaath/batshit";
 
-const users = create<User, number>({
-  fetcher: async (ids) => {
+const users = create({
+  fetcher: async (ids: number[]) => {
     return client.users.where({
       userId_in: ids,
     });
@@ -111,6 +111,30 @@ const UserList = () => {
 };
 ```
 
+### Fetching where response is an object of items
+
+In this example the response is an object/record with the id of the user as the key and the user object as the value.
+
+**Example:**
+```json
+{
+  1: {"username": "bob"},
+  2: {"username": "alice"}
+}
+```
+
+```ts
+import * as batshit from "@yornaath/batshit";
+
+const batcher = batshit.create({
+  fetcher: async (ids: number[]) => {
+    const users: Record<number, User> = await fetchUserRecords(ids)
+    return users
+  },
+  resolver: batshit.indexedResolver(),
+});
+```
+
 ### Fethcing with needed context
 
 If the batch fetcher needs some context like an sdk or client to make its fetching you can use a memoizer to make sure that you reuse a batcher for the given context in the hook calls.
@@ -123,9 +147,9 @@ import * as batshit from "@yornaath/batshit";
 export const key = "markets";
 
 const batcher = memoize((sdk: Sdk<IndexerContext>) => {
-  return batshit.create<Market, number>({
+  return batshit.create({
     name: key,
-    fetcher: async (ids) => {
+    fetcher: async (ids: number[]) => {
       const { markets } = await sdk.markets({
         where: {
           marketId_in: ids,
@@ -162,8 +186,8 @@ export const useMarket = (marketId: number) => {
 This batcher will fetch all posts for multiple users in one request and resolve the correct list of posts for the discrete queries.
 
 ```ts
-const userposts = create<mock.Post, { authorId: number }, mock.Post[]>({
-  fetcher: async (queries) => {
+const userposts = create({
+  fetcher: async (queries: { authorId: number }) => {
     return api.posts.where({
       authorId_in: queries.map((q) => q.authorId),
     });
@@ -191,8 +215,8 @@ yarn add @yornaath/batshit-devtools @yornaath/batshit-devtools-react
 import { create, keyResolver, windowScheduler } from "@yornaath/batshit";
 import BatshitDevtools from "@yornaath/batshit-devtools-react";
 
-const batcher = create<Data, number>({
-  fetcher: async (queries) => {...},
+const batcher = create({
+  fetcher: async (queries: number[]) => {...},
   scheduler: windowScheduler(10),
   resolver: keyResolver("id"),
   name: "batcher:data" // used in the devtools to identify a particular batcher.

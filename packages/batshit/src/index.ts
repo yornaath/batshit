@@ -27,14 +27,14 @@ export type Batcher<T, Q, R = T> = {
  * @generic Q - item query type
  * @generic C - the context of the batcher passed to the fetcher function
  */
-export type BatcherConfig<T, Q, R = T> = {
+export type BatcherConfig<T, Q, R> = {
   /**
    * The function that makes the batched request for the current batch queries
    *
    * @param queries Q[]
-   * @returns Promise<T[]
+   * @returns Promise<T
    */
-  fetcher: (queries: Q[]) => Promise<T[]>;
+  fetcher: (queries: Q[]) => Promise<T>;
   /**
    * The scheduling function.
    */
@@ -46,7 +46,7 @@ export type BatcherConfig<T, Q, R = T> = {
    * @param query Q
    * @returns string
    */
-  resolver: (items: T[], query: Q) => R;
+  resolver: (items: T, query: Q) => R;
   /**
    * Display name of the batcher. Used for debugging and devtools.
    */
@@ -70,7 +70,7 @@ export type BatcherScheduler = {
 export type BatcherMemory<T, Q> = {
   seq: number;
   batch: Set<Q>;
-  currentRequest: Deferred<T[]>;
+  currentRequest: Deferred<T>;
   timer?: NodeJS.Timeout | undefined;
   start?: number | null;
   latest?: number | null;
@@ -89,7 +89,7 @@ export type BatcherMemory<T, Q> = {
 export const create = <T, Q, R = T>(
   config: BatcherConfig<T, Q, R>,
   memory?: BatcherMemory<T, Q>
-): Batcher<T, Q, ReturnType<typeof config["resolver"]>> => {
+): Batcher<T, Q, ReturnType<(typeof config)["resolver"]>> => {
   const name = config.name ?? `batcher:${Math.random().toString(16).slice(2)})`;
 
   const scheduler: BatcherScheduler = config.scheduler ?? windowScheduler(10);
@@ -100,7 +100,7 @@ export const create = <T, Q, R = T>(
   let mem: BatcherMemory<T, Q> = memory ?? {
     seq: 0,
     batch: new Set<Q>(),
-    currentRequest: deferred<T[]>(),
+    currentRequest: deferred<T>(),
     timer: undefined,
     start: null,
     latest: null,
@@ -134,7 +134,7 @@ export const create = <T, Q, R = T>(
       devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
 
       mem.batch = new Set();
-      mem.currentRequest = deferred<T[]>();
+      mem.currentRequest = deferred<T>();
       mem.timer = undefined;
       mem.start = null;
       mem.latest = null;
@@ -161,15 +161,27 @@ export const create = <T, Q, R = T>(
 };
 
 /**
+ * Resolve by item field of items when response is an array.
  * Create a euquality check to check if the query matches a given key on the item data.
  *
  * @param key keyof T
- * @returns (item:T, query: Q) => boolean
+ * @returns (item:T extends Array<any>, query: Q) => boolean
  */
 export const keyResolver =
-  <T, Q>(key: keyof T) =>
-  (items: T[], query: Q) =>
+  <T extends Array<any>, Q>(key: T extends Array<infer A> ? keyof A : never) =>
+  (items: T, query: Q) =>
     items.find((item) => item[key] == query) as T;
+
+/**
+ * Resolve by record index when response is an object.
+ * Create a euquality check to check if the query matches a given key on the item data.
+ *
+ * @returns (item:T extends Array<any>, query: Q) => boolean
+ */
+export const indexedResolver =
+  <T extends Record<any, any>, Q>() =>
+  (itemsIndex: T, query: Q) =>
+    itemsIndex[query];
 
 /**
  * Give a window in ms where all queued fetched made within the window will be batched into

@@ -13,7 +13,7 @@ export type BatcherState<T, Q> = {
 export type SequenceState<T, Q> = {
   batch: Q[];
   fetching: boolean;
-  data: T[];
+  data: T;
   error: Error | null;
 };
 

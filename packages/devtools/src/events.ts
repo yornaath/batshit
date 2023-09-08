@@ -32,7 +32,7 @@ export type DataEvent<T, Q> = {
   type: "data";
   name: string;
   seq: number;
-  data: T[];
+  data: T;
 };
 
 export type ErrorEvent<T, Q> = {

@@ -38,7 +38,7 @@ export type DevtoolsListener<T, Q> = {
     scheduled: number;
   }) => void;
   fetch: (_event: { seq: number; batch: Q[] }) => void;
-  data: (_event: { seq: number; data: T[] }) => void;
+  data: (_event: { seq: number; data: T }) => void;
   error: (_event: { seq: number; error: Error }) => void;
 };
 
