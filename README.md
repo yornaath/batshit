@@ -118,8 +118,8 @@ In this example the response is an object/record with the id of the user as the 
 **Example:**
 ```json
 {
-  1: {"username": "bob"},
-  2: {"username": "alice"}
+  "1": {"username": "bob"},
+  "2": {"username": "alice"}
 }
 ```
 
