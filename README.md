@@ -118,8 +118,8 @@ In this example the response is an object/record with the id of the user as the 
 **Example:**
 ```json
 {
-  1: {"username": "bob"},
-  2: {"username": "alice"}
+  "1": {"username": "bob"},
+  "2": {"username": "alice"}
 }
 ```
 
@@ -127,8 +127,8 @@ In this example the response is an object/record with the id of the user as the 
 import * as batshit from "@yornaath/batshit";
 
 const batcher = batshit.create({
-  fetcher: async (ids: number[]) => {
-    const users: Record<number, User> = await fetchUserRecords(ids)
+  fetcher: async (ids: string[]) => {
+    const users: Record<string, User> = await fetchUserRecords(ids)
     return users
   },
   resolver: batshit.indexedResolver(),
