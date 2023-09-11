@@ -1,5 +1,16 @@
 # @yornaath/batshit
 
+## 0.8.0
+
+### Minor Changes
+
+- Can now resolve record responses
+
+### Patch Changes
+
+- Updated dependencies
+  - @yornaath/batshit-devtools@1.5.0
+
 ## 0.7.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 1.5.0
+
+### Minor Changes
+
+- Can now resolve record responses
+
 ## 1.4.1
 
 ### Patch Changes
