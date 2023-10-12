@@ -1074,8 +1074,8 @@ __metadata:
   dependencies:
     "@types/lodash-es": ^4.17.6
     "@types/react": ^18.0.26
-    "@yornaath/batshit": ^0.7.1
-    "@yornaath/batshit-devtools": ^1.4.1
+    "@yornaath/batshit": ^0.8.0
+    "@yornaath/batshit-devtools": ^1.5.0
     lodash-es: ^4.17.21
     react: ^18.2.0
   peerDependencies:
@@ -1083,17 +1083,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yornaath/batshit-devtools@*, @yornaath/batshit-devtools@^1.4.1, @yornaath/batshit-devtools@workspace:packages/devtools":
+"@yornaath/batshit-devtools@*, @yornaath/batshit-devtools@^1.5.0, @yornaath/batshit-devtools@workspace:packages/devtools":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit-devtools@workspace:packages/devtools"
   languageName: unknown
   linkType: soft
 
-"@yornaath/batshit@*, @yornaath/batshit@^0.7.1, @yornaath/batshit@workspace:packages/batshit":
+"@yornaath/batshit@*, @yornaath/batshit@^0.8.0, @yornaath/batshit@workspace:packages/batshit":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit@workspace:packages/batshit"
   dependencies:
-    "@yornaath/batshit-devtools": ^1.4.1
+    "@yornaath/batshit-devtools": ^1.5.0
   languageName: unknown
   linkType: soft
 
