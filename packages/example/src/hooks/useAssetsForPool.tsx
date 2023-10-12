@@ -4,12 +4,8 @@ import * as Ztg from "@zeitgeistpm/indexer";
 import delay from "delay";
 import { zeitgeist } from "../sdk";
 
-const assetsBatcher = batshit.create<
-  Ztg.FullAssetFragment,
-  number,
-  Ztg.FullAssetFragment[]
->({
-  fetcher: async (ids) => {
+const assetsBatcher = batshit.create({
+  fetcher: async (ids: number[]) => {
     await delay(200);
     const { assets } = await zeitgeist.assets({
       where: {

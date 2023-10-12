@@ -1097,14 +1097,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@zeitgeistpm/indexer@npm:^2.17.2":
-  version: 2.17.2
-  resolution: "@zeitgeistpm/indexer@npm:2.17.2"
+"@zeitgeistpm/indexer@npm:^3.11.0":
+  version: 3.11.0
+  resolution: "@zeitgeistpm/indexer@npm:3.11.0"
   dependencies:
     graphql: ^16.6.0
     graphql-request: ^5.0.0
     graphql-tag: ^2.12.6
-  checksum: c1d5574f3d95399a69a22f6144dac730d568a631617c79e8457fdd3cfbab1a6c208747b8303166c9b264a0d54f893504757946f395a0622dc25f84a6ee3879d9
+  checksum: 66aa8c07e27bad809b6e729d2bdd59bc73d243492e36ad0498d96780f29eb25532616eb9ccdfd44751b18764718efac5987a70224ce4ba38f452da3c59e6647d
   languageName: node
   linkType: hard
 
@@ -2065,7 +2065,7 @@ __metadata:
     "@yornaath/batshit": "*"
     "@yornaath/batshit-devtools": "*"
     "@yornaath/batshit-devtools-react": "*"
-    "@zeitgeistpm/indexer": ^2.17.2
+    "@zeitgeistpm/indexer": ^3.11.0
     delay: ^5.0.0
     react: ^18.2.0
     react-dom: ^18.2.0

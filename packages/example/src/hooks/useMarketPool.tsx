@@ -5,8 +5,8 @@ import { FullMarketFragment } from "@zeitgeistpm/indexer";
 import delay from "delay";
 import { zeitgeist } from "../sdk";
 
-const poolsBatcher = batshit.create<Ztg.FullPoolFragment, number>({
-  fetcher: async (ids) => {
+const poolsBatcher = batshit.create({
+  fetcher: async (ids: number[]) => {
     await delay(200);
     const { pools } = await zeitgeist.pools({
       where: {
