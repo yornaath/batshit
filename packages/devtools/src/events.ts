@@ -1,3 +1,5 @@
+import type { Schedule } from "@yornaath/batshit";
+
 export type BatshitEvent<Q, T> =
   | CreateEvent<T, Q>
   | QueueEvent<T, Q>
@@ -18,7 +20,7 @@ export type QueueEvent<T, Q> = {
   batch: Q[];
   start: number;
   latest: number;
-  scheduled: number;
+  scheduled: Schedule;
 };
 
 export type FetchEvent<T, Q> = {

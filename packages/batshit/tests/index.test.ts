@@ -7,6 +7,7 @@ import {
   windowScheduler,
   keyResolver,
   indexedResolver,
+  windowedBatchScheduler,
 } from "../src/index";
 import * as mock from "./mock";
 
@@ -228,6 +229,103 @@ const tests = () => {
     ]);
 
     expect(all).toEqual(mock.users);
+  });
+
+  test("handle undefined responses", async () => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
+        return mock.usersByIds(ids);
+      },
+      resolver: (items, id) => items.find((item) => item.id === id) ?? null,
+    });
+
+    const all = await Promise.all([batcher.fetch(2), batcher.fetch(100)]);
+
+    expect(all).toEqual([{ id: 2, name: "Alice" }, null]);
+  });
+
+  test("immediate scheduled batchers should work", async () => {
+    let fetchCounter = 0;
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
+        fetchCounter++;
+        return mock.usersByIds(ids);
+      },
+      scheduler: () => "immediate",
+      resolver: keyResolver("id"),
+    });
+
+    const one = batcher.fetch(1);
+    const two = batcher.fetch(2);
+
+    expect(await one).toEqual({ id: 1, name: "Bob" });
+    expect(await two).toEqual({ id: 2, name: "Alice" });
+
+    expect(fetchCounter).toEqual(2);
+  });
+
+  describe("windowedBatchScheduler", () => {
+    test("should batch within a window, but fetch immediatly if batch size 2 is reached", async () => {
+      let fetchCounter = 0;
+      const batcher = create({
+        fetcher: async (ids: number[]) => {
+          fetchCounter++;
+          return mock.usersByIds(ids);
+        },
+        scheduler: windowedBatchScheduler({
+          windowMs: 10,
+          maxBatchSize: 2,
+        }),
+        resolver: keyResolver("id"),
+      });
+
+      const one = batcher.fetch(1);
+      const two = batcher.fetch(2);
+      const three = batcher.fetch(3);
+      const four = batcher.fetch(4);
+
+      const all = await Promise.all([one, two, three, four]);
+
+      expect(fetchCounter).toBe(2);
+
+      expect(all).toEqual([
+        { id: 1, name: "Bob" },
+        { id: 2, name: "Alice" },
+        { id: 3, name: "Sally" },
+        { id: 4, name: "John" },
+      ]);
+    });
+
+    test("should batch within a window, but fetch immediatly if batch size 1 is reached", async () => {
+      let fetchCounter = 0;
+      const batcher = create({
+        fetcher: async (ids: number[]) => {
+          fetchCounter++;
+          return mock.usersByIds(ids);
+        },
+        scheduler: windowedBatchScheduler({
+          windowMs: 10,
+          maxBatchSize: 1,
+        }),
+        resolver: keyResolver("id"),
+      });
+
+      const one = batcher.fetch(1);
+      const two = batcher.fetch(2);
+      const three = batcher.fetch(3);
+      const four = batcher.fetch(4);
+
+      const all = await Promise.all([one, two, three, four]);
+
+      expect(fetchCounter).toBe(4);
+
+      expect(all).toEqual([
+        { id: 1, name: "Bob" },
+        { id: 2, name: "Alice" },
+        { id: 3, name: "Sally" },
+        { id: 4, name: "John" },
+      ]);
+    });
   });
 };
 

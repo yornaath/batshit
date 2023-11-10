@@ -64,8 +64,10 @@ export type BatcherScheduler = {
    * @param latest number - time stamp of the latest queued fetch.
    * @returns number - the number of ms to wait from latest queued fetch until executing batchh fetch call.
    */
-  (start: number, latest: number): number;
+  (start: number, latest: number, batchSize: number): Schedule;
 };
+
+export type Schedule = number | "immediate";
 
 export type BatcherMemory<T, Q> = {
   seq: number;
@@ -108,6 +110,14 @@ export const create = <T, Q, R = T>(
 
   devtools?.create({ seq: mem.seq });
 
+  const nextBatch = () => {
+    mem.batch = new Set();
+    mem.currentRequest = deferred<T>();
+    mem.timer = undefined;
+    mem.start = null;
+    mem.latest = null;
+  };
+
   const fetch = (query: Q): Promise<R> => {
     if (!mem.start) mem.start = Date.now();
     mem.latest = Date.now();
@@ -115,7 +125,7 @@ export const create = <T, Q, R = T>(
     mem.batch.add(query);
     clearTimeout(mem.timer);
 
-    const scheduled = scheduler(mem.start, mem.latest);
+    const scheduled = scheduler(mem.start, mem.latest, mem.batch.size);
 
     devtools?.queue({
       seq: mem.seq,
@@ -126,18 +136,14 @@ export const create = <T, Q, R = T>(
       start: mem.start,
     });
 
-    mem.timer = setTimeout(() => {
+    const fetchBatch = () => {
       const currentSeq = mem.seq;
       const req = config.fetcher([...mem.batch]);
       const currentRequest = mem.currentRequest;
 
       devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
 
-      mem.batch = new Set();
-      mem.currentRequest = deferred<T>();
-      mem.timer = undefined;
-      mem.start = null;
-      mem.latest = null;
+      nextBatch();
 
       req
         .then((data) => {
@@ -150,11 +156,20 @@ export const create = <T, Q, R = T>(
         });
 
       mem.seq++;
-    }, scheduled);
 
-    return mem.currentRequest.value.then((items) =>
-      config.resolver(items, query)
-    );
+      return req;
+    };
+
+    if (scheduled === "immediate") {
+      const req = mem.currentRequest;
+      fetchBatch();
+      return req.value.then((items) => config.resolver(items, query));
+    } else {
+      mem.timer = setTimeout(fetchBatch, scheduled);
+      return mem.currentRequest.value.then((items) =>
+        config.resolver(items, query)
+      );
+    }
   };
 
   return { fetch };
@@ -207,3 +222,21 @@ export const windowScheduler: (ms: number) => BatcherScheduler =
 export const bufferScheduler: (ms: number) => BatcherScheduler = (ms) => () => {
   return ms;
 };
+
+/**
+ * Give a window in ms where all queued fetched made within the window will be batched into
+ * one singler batch fetch call.
+ *
+ * @param ms number
+ * @returns BatcherScheduler
+ */
+export const windowedBatchScheduler: (config: {
+  windowMs: number;
+  maxBatchSize: number;
+}) => BatcherScheduler =
+  ({ windowMs: ms, maxBatchSize }) =>
+  (start, latest, batchSize) => {
+    if (batchSize >= maxBatchSize) return "immediate";
+    const spent = latest - start;
+    return ms - spent;
+  };
