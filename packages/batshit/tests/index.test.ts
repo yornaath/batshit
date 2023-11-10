@@ -326,6 +326,38 @@ const tests = () => {
         { id: 4, name: "John" },
       ]);
     });
+
+    test("manuall implementation of windowed batcher", async () => {
+      let fetchCounter = 0;
+      const batcher = create({
+        fetcher: async (ids: number[]) => {
+          fetchCounter++;
+          return mock.usersByIds(ids);
+        },
+        scheduler: (start, latest, batchSize) => {
+          if (batchSize >= 1) return "immediate";
+          const spent = latest - start;
+          return 10 - spent;
+        },
+        resolver: keyResolver("id"),
+      });
+
+      const one = batcher.fetch(1);
+      const two = batcher.fetch(2);
+      const three = batcher.fetch(3);
+      const four = batcher.fetch(4);
+
+      const all = await Promise.all([one, two, three, four]);
+
+      expect(fetchCounter).toBe(4);
+
+      expect(all).toEqual([
+        { id: 1, name: "Bob" },
+        { id: 2, name: "Alice" },
+        { id: 3, name: "Sally" },
+        { id: 4, name: "John" },
+      ]);
+    });
   });
 };
 

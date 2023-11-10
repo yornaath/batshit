@@ -67,6 +67,9 @@ export type BatcherScheduler = {
   (start: number, latest: number, batchSize: number): Schedule;
 };
 
+/**
+ * A schedule for when to execute a batched fetch call.
+ */
 export type Schedule = number | "immediate";
 
 export type BatcherMemory<T, Q> = {
@@ -234,9 +237,9 @@ export const windowedBatchScheduler: (config: {
   windowMs: number;
   maxBatchSize: number;
 }) => BatcherScheduler =
-  ({ windowMs: ms, maxBatchSize }) =>
+  ({ windowMs, maxBatchSize }) =>
   (start, latest, batchSize) => {
     if (batchSize >= maxBatchSize) return "immediate";
     const spent = latest - start;
-    return ms - spent;
+    return windowMs - spent;
   };
