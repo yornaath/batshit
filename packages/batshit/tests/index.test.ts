@@ -201,7 +201,7 @@ const tests = () => {
   test("record responses", async () => {
     const batcher = create({
       fetcher: async (ids: number[]) => {
-        const users = mock.usersByIds(ids);
+        const users = await mock.usersByIds(ids);
         const usersRecord = users.reduce<Record<number, mock.User>>(
           (index, user) => {
             return {
