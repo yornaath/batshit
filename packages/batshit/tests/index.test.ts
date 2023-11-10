@@ -7,7 +7,7 @@ import {
   windowScheduler,
   keyResolver,
   indexedResolver,
-  windowedBatchScheduler,
+  windowedFiniteBatchScheduler,
 } from "../src/index";
 import * as mock from "./mock";
 
@@ -272,7 +272,7 @@ const tests = () => {
           fetchCounter++;
           return mock.usersByIds(ids);
         },
-        scheduler: windowedBatchScheduler({
+        scheduler: windowedFiniteBatchScheduler({
           windowMs: 10,
           maxBatchSize: 2,
         }),
@@ -303,7 +303,7 @@ const tests = () => {
           fetchCounter++;
           return mock.usersByIds(ids);
         },
-        scheduler: windowedBatchScheduler({
+        scheduler: windowedFiniteBatchScheduler({
           windowMs: 10,
           maxBatchSize: 1,
         }),

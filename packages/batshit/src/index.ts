@@ -233,7 +233,7 @@ export const bufferScheduler: (ms: number) => BatcherScheduler = (ms) => () => {
  * @param ms number
  * @returns BatcherScheduler
  */
-export const windowedBatchScheduler: (config: {
+export const windowedFiniteBatchScheduler: (config: {
   windowMs: number;
   maxBatchSize: number;
 }) => BatcherScheduler =
