@@ -1,4 +1,3 @@
-import type { Schedule } from "@yornaath/batshit";
 import {
   BatshitEvent,
   CreateEvent,
@@ -36,7 +35,7 @@ export type DevtoolsListener<T, Q> = {
     batch: Q[];
     start: number;
     latest: number;
-    scheduled: Schedule;
+    scheduled: number | "immediate" | "never";
   }) => void;
   fetch: (_event: { seq: number; batch: Q[] }) => void;
   data: (_event: { seq: number; data: T }) => void;

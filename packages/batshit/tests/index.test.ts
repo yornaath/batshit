@@ -8,6 +8,7 @@ import {
   keyResolver,
   indexedResolver,
   windowedFiniteBatchScheduler,
+  maxBatchSizeScheduler,
 } from "../src/index";
 import * as mock from "./mock";
 
@@ -327,6 +328,41 @@ const tests = () => {
       ]);
     });
 
+    test("should work with the next batch after first batch is made", async () => {
+      let fetchCounter = 0;
+      const batcher = create({
+        fetcher: async (ids: number[]) => {
+          fetchCounter++;
+          return mock.usersByIds(ids);
+        },
+        scheduler: windowedFiniteBatchScheduler({
+          windowMs: 10,
+          maxBatchSize: 1,
+        }),
+        resolver: keyResolver("id"),
+      });
+
+      const one = batcher.fetch(1);
+      const two = batcher.fetch(2);
+      const firstTwo = await Promise.all([one, two]);
+
+      expect(fetchCounter).toBe(2);
+
+      const three = batcher.fetch(3);
+      const four = batcher.fetch(4);
+
+      const lastTwo = await Promise.all([three, four]);
+
+      expect(fetchCounter).toBe(4);
+
+      expect([...firstTwo, ...lastTwo]).toEqual([
+        { id: 1, name: "Bob" },
+        { id: 2, name: "Alice" },
+        { id: 3, name: "Sally" },
+        { id: 4, name: "John" },
+      ]);
+    });
+
     test("manuall implementation of windowed batcher", async () => {
       let fetchCounter = 0;
       const batcher = create({
@@ -352,6 +388,102 @@ const tests = () => {
       expect(fetchCounter).toBe(4);
 
       expect(all).toEqual([
+        { id: 1, name: "Bob" },
+        { id: 2, name: "Alice" },
+        { id: 3, name: "Sally" },
+        { id: 4, name: "John" },
+      ]);
+    });
+  });
+
+  describe("maxBatchSizeScheduler", () => {
+    test("should batch calls when max batch size of 1 is reached", async () => {
+      let fetchCounter = 0;
+      const batcher = create({
+        fetcher: async (ids: number[]) => {
+          fetchCounter++;
+          return mock.usersByIds(ids);
+        },
+        scheduler: maxBatchSizeScheduler({
+          maxBatchSize: 1,
+        }),
+        resolver: keyResolver("id"),
+      });
+
+      const one = batcher.fetch(1);
+      const two = batcher.fetch(2);
+      const three = batcher.fetch(3);
+      const four = batcher.fetch(4);
+
+      const all = await Promise.all([one, two, three, four]);
+
+      expect(fetchCounter).toBe(4);
+
+      expect(all).toEqual([
+        { id: 1, name: "Bob" },
+        { id: 2, name: "Alice" },
+        { id: 3, name: "Sally" },
+        { id: 4, name: "John" },
+      ]);
+    });
+
+    test("should batch calls when max batch size of 4 is reached", async () => {
+      let fetchCounter = 0;
+      const batcher = create({
+        fetcher: async (ids: number[]) => {
+          fetchCounter++;
+          return mock.usersByIds(ids);
+        },
+        scheduler: maxBatchSizeScheduler({
+          maxBatchSize: 4,
+        }),
+        resolver: keyResolver("id"),
+      });
+
+      const one = batcher.fetch(1);
+      const two = batcher.fetch(2);
+      const three = batcher.fetch(3);
+      const four = batcher.fetch(4);
+
+      const all = await Promise.all([one, two, three, four]);
+
+      expect(fetchCounter).toBe(1);
+
+      expect(all).toEqual([
+        { id: 1, name: "Bob" },
+        { id: 2, name: "Alice" },
+        { id: 3, name: "Sally" },
+        { id: 4, name: "John" },
+      ]);
+    });
+
+    test("should work with the next batch after first batch is made", async () => {
+      let fetchCounter = 0;
+      const batcher = create({
+        fetcher: async (ids: number[]) => {
+          fetchCounter++;
+          return mock.usersByIds(ids);
+        },
+        scheduler: maxBatchSizeScheduler({
+          maxBatchSize: 1,
+        }),
+        resolver: keyResolver("id"),
+      });
+
+      const one = batcher.fetch(1);
+      const two = batcher.fetch(2);
+      const firstTwo = await Promise.all([one, two]);
+
+      expect(fetchCounter).toBe(2);
+
+      const three = batcher.fetch(3);
+      const four = batcher.fetch(4);
+
+      const lastTwo = await Promise.all([three, four]);
+
+      expect(fetchCounter).toBe(4);
+
+      expect([...firstTwo, ...lastTwo]).toEqual([
         { id: 1, name: "Bob" },
         { id: 2, name: "Alice" },
         { id: 3, name: "Sally" },

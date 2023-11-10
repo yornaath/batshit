@@ -1,4 +1,4 @@
-import { SequenceState } from "packages/devtools/dist";
+import { SequenceState } from "@yornaath/batshit-devtools";
 import React from "react";
 
 export const Sequence = (props: {

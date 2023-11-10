@@ -111,6 +111,8 @@ const UserList = () => {
 };
 ```
 
+### Limit number of batched
+
 ### Fetching where response is an object of items
 
 In this example the response is an object/record with the id of the user as the key and the user object as the value.

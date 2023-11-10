@@ -70,7 +70,7 @@ export type BatcherScheduler = {
 /**
  * A schedule for when to execute a batched fetch call.
  */
-export type Schedule = number | "immediate";
+export type Schedule = number | "immediate" | "never";
 
 export type BatcherMemory<T, Q> = {
   seq: number;
@@ -167,6 +167,10 @@ export const create = <T, Q, R = T>(
       const req = mem.currentRequest;
       fetchBatch();
       return req.value.then((items) => config.resolver(items, query));
+    } else if (scheduled === "never") {
+      return mem.currentRequest.value.then((items) =>
+        config.resolver(items, query)
+      );
     } else {
       mem.timer = setTimeout(fetchBatch, scheduled);
       return mem.currentRequest.value.then((items) =>
@@ -227,10 +231,9 @@ export const bufferScheduler: (ms: number) => BatcherScheduler = (ms) => () => {
 };
 
 /**
- * Give a window in ms where all queued fetched made within the window will be batched into
- * one singler batch fetch call.
+ * Same as windowScheduler, will batch calls made within a window of time OR when the max batch size is reached.
  *
- * @param ms number
+ * @param config: {windowMs: number; maxBatchSize: number;}
  * @returns BatcherScheduler
  */
 export const windowedFiniteBatchScheduler: (config: {
@@ -242,4 +245,19 @@ export const windowedFiniteBatchScheduler: (config: {
     if (batchSize >= maxBatchSize) return "immediate";
     const spent = latest - start;
     return windowMs - spent;
+  };
+
+/**
+ * Will batch calls when the max batch size is reached.
+ *
+ * @param config: {maxBatchSize: number;}
+ * @returns BatcherScheduler
+ */
+export const maxBatchSizeScheduler: (config: {
+  maxBatchSize: number;
+}) => BatcherScheduler =
+  ({ maxBatchSize }) =>
+  (_start, _latest, batchSize) => {
+    if (batchSize >= maxBatchSize) return "immediate";
+    return "never";
   };
