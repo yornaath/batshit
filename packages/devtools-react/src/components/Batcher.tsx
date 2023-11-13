@@ -1,6 +1,6 @@
-import { BatcherState } from "packages/devtools/dist";
 import { useState } from "react";
 import { Sequence } from "./Sequence";
+import { BatcherState } from "@yornaath/batshit-devtools";
 
 export const Batcher = (props: {
   name: string;

@@ -18,7 +18,7 @@ export type QueueEvent<T, Q> = {
   batch: Q[];
   start: number;
   latest: number;
-  scheduled: number;
+  scheduled: number | "immediate" | "never";
 };
 
 export type FetchEvent<T, Q> = {

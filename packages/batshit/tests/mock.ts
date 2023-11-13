@@ -1,3 +1,4 @@
+import { setTimeout } from "node:timers/promises";
 export type User = {
   id: number;
   name: string;
@@ -26,8 +27,14 @@ export const posts: Post[] = [
   { id: 6, title: "World", authorId: 3 },
 ];
 
-export const usersByIds = (ids: number[]) =>
-  Object.values(users).filter((item) => ids.includes(item.id));
+export const usersByIds = async (ids: number[]) => {
+  await setTimeout(5);
+  return Object.values(users).filter((item) => ids.includes(item.id));
+};
 
-export const postsByAuthorId = (authorIds: number[]) =>
-  Object.values(posts).filter((item) => authorIds.includes(item.authorId));
+export const postsByAuthorId = async (authorIds: number[]) => {
+  await setTimeout(5);
+  return Object.values(posts).filter((item) =>
+    authorIds.includes(item.authorId)
+  );
+};
