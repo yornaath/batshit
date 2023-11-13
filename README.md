@@ -111,7 +111,36 @@ const UserList = () => {
 };
 ```
 
-### Limit number of batched
+### Limit batch size
+
+We provide two helper functions for limiting the number of batched fetch calls.
+
+#### `windowedFiniteBatchScheduler`
+
+This will batch all calls made within a certain time frame UP to a certain max batch size before it starts a new batch
+
+```ts
+const batcher = batshit.create({
+  ...,
+  scheduler: maxBatchSizeScheduler({
+    windowMs: 10,
+    maxBatchSize: 100,
+  }),
+});
+```
+
+#### `maxBatchSizeScheduler`
+
+Same as the one above, but will only wait indefinetly until the batch size is met.
+
+```ts
+const batcher = batshit.create({
+  ...,
+  scheduler: maxBatchSizeScheduler({
+    maxBatchSize: 100,
+  }),
+});
+```
 
 ### Fetching where response is an object of items
 

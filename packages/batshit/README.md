@@ -111,7 +111,9 @@ const UserList = () => {
 };
 ```
 
-### Limit number of batched
+### Limit batch size
+
+We provide two helper functions for limiting the number of batched fetch calls.
 
 ### Fetching where response is an object of items
 
