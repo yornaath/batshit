@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 1.6.0
+
+### Minor Changes
+
+- - Scheduler function now takes current batch size as third parameter* Added helper: `windowedFiniteBatchScheduler` to limit within a window or max batch size.* Added helper: `maxBatchSizeScheduler` to make a batch that waits until batch size is met.
+
 ## 1.5.0
 
 ### Minor Changes
