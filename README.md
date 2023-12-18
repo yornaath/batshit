@@ -122,7 +122,7 @@ This will batch all calls made within a certain time frame UP to a certain max b
 ```ts
 const batcher = batshit.create({
   ...,
-  scheduler: maxBatchSizeScheduler({
+  scheduler: windowedFiniteBatchScheduler({
     windowMs: 10,
     maxBatchSize: 100,
   }),
@@ -166,7 +166,7 @@ const batcher = batshit.create({
 });
 ```
 
-### Fethcing with needed context
+### Fetching with needed context
 
 If the batch fetcher needs some context like an sdk or client to make its fetching you can use a memoizer to make sure that you reuse a batcher for the given context in the hook calls.
 
