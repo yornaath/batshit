@@ -1,5 +1,17 @@
 # @yornaath/batshit-devtools-react
 
+## 0.8.0
+
+### Minor Changes
+
+- Just return null if key or index resolvers cant find item, to make it more out of the box compatible with react-query
+
+### Patch Changes
+
+- Updated dependencies
+  - @yornaath/batshit@0.10.0
+  - @yornaath/batshit-devtools@1.7.0
+
 ## 0.7.0
 
 ### Minor Changes

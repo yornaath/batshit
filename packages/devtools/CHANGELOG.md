@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 1.7.0
+
+### Minor Changes
+
+- Just return null if key or index resolvers cant find item, to make it more out of the box compatible with react-query
+
 ## 1.6.0
 
 ### Minor Changes

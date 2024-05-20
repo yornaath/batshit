@@ -194,7 +194,7 @@ export const keyResolver =
     key: T extends Array<infer A> ? keyof A : never
   ) =>
   (items: T, query: Q): R =>
-    items.find((item) => item[key] == query);
+    items.find((item) => item[key] == query) ?? null;
 
 /**
  * Resolve by record index when response is an object.
@@ -205,7 +205,7 @@ export const keyResolver =
 export const indexedResolver =
   <T extends Record<any, any>, Q>() =>
   (itemsIndex: T, query: Q) =>
-    itemsIndex[query];
+    itemsIndex[query] ?? null;
 
 /**
  * Give a window in ms where all queued fetched made within the window will be batched into
