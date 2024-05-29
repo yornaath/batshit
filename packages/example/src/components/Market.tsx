@@ -55,7 +55,13 @@ export const Market = (props: { market: Ztg.FullMarketFragment }) => {
       )}
       {pool && (
         <div style={{ marginRight: 8 }}>
-          {Number(pool.volume / 10 ** 10).toFixed(2)} VOL
+          {Number(
+            pool.account.balances.reduce((acc, balance) => {
+              return acc + Number(balance.balance);
+            }, 0) /
+              10 ** 10
+          ).toFixed(2)}{" "}
+          VOL
           {assets && ","}
         </div>
       )}

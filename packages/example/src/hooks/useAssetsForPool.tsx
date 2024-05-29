@@ -9,14 +9,17 @@ const assetsBatcher = batshit.create({
     await delay(200);
     const { assets } = await zeitgeist.assets({
       where: {
-        pool: {
-          poolId_in: ids,
+        market: {
+          pool: {
+            poolId_in: ids,
+          },
         },
       },
     });
     return assets;
   },
-  resolver: (assets, query) => assets.filter((a) => a.pool?.poolId === query),
+  resolver: (assets, query) =>
+    assets.filter((a) => a.market.pool?.poolId === query),
   scheduler: batshit.bufferScheduler(1000),
   name: "assets",
 });
