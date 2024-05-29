@@ -1083,7 +1083,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yornaath/batshit-devtools@*, @yornaath/batshit-devtools@^1.6.0, @yornaath/batshit-devtools@workspace:packages/devtools":
+"@yornaath/batshit-devtools@*, @yornaath/batshit-devtools@^1.7.0, @yornaath/batshit-devtools@workspace:packages/devtools":
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit-devtools@workspace:packages/devtools"
   languageName: unknown
@@ -1093,7 +1093,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@yornaath/batshit@workspace:packages/batshit"
   dependencies:
-    "@yornaath/batshit-devtools": ^1.6.0
+    "@yornaath/batshit-devtools": ^1.7.0
   languageName: unknown
   linkType: soft
 
