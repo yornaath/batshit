@@ -190,8 +190,8 @@ export const create = <T, Q, R = T>(
  * @returns (item:T extends Array<A>, query: Q) => A
  */
 export const keyResolver =
-  <T extends Array<any>, Q, R = T extends Array<infer A> ? A : never>(
-    key: T extends Array<infer A> ? keyof A : never
+  <T extends ReadonlyArray<any>, Q, R = T extends ReadonlyArray<infer A> ? A : never>(
+    key: T extends ReadonlyArray<infer A> ? keyof A : never
   ) =>
   (items: T, query: Q): R =>
     items.find((item) => item[key] == query) ?? null;
