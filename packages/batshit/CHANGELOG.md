@@ -1,5 +1,13 @@
 # @yornaath/batshit
 
+## 0.10.1
+
+### Patch Changes
+
+- keyResolver accepts T extends ReadonlyArray
+- Updated dependencies
+  - @yornaath/batshit-devtools@1.7.1
+
 ## 0.10.0
 
 ### Minor Changes

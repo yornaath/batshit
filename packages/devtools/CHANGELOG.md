@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 1.7.1
+
+### Patch Changes
+
+- keyResolver accepts T extends ReadonlyArray
+
 ## 1.7.0
 
 ### Minor Changes

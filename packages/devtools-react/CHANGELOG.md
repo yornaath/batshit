@@ -1,5 +1,14 @@
 # @yornaath/batshit-devtools-react
 
+## 0.8.1
+
+### Patch Changes
+
+- keyResolver accepts T extends ReadonlyArray
+- Updated dependencies
+  - @yornaath/batshit@0.10.1
+  - @yornaath/batshit-devtools@1.7.1
+
 ## 0.8.0
 
 ### Minor Changes
