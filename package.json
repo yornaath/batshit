@@ -1,6 +1,6 @@
 {
   "name": "batshit-repo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A batch manager that will deduplicate and batch requests for a certain data type made within a window.",
   "author": {
     "name": "Jørn Andre",
@@ -21,6 +21,7 @@
     "build-example": "turbo build && turbo build-example"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.0",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-typescript": "^10.0.1",
     "@vitest/coverage-c8": "^0.26.2",
@@ -30,8 +31,5 @@
     "turbo": "^1.6.3",
     "typescript": "^4.9.4",
     "vitest": "^0.26.2"
-  },
-  "dependencies": {
-    "@changesets/cli": "^2.26.0"
   }
 }
