@@ -102,7 +102,7 @@ export const create = <T, Q, R = T>(
   const devtools: DevtoolsListener<any, any> | undefined =
     globalThis.__BATSHIT_DEVTOOLS__?.for(name);
 
-  let mem: BatcherMemory<T, Q> = memory ?? {
+  const mem: BatcherMemory<T, Q> = memory ?? {
     seq: 0,
     batch: new Set<Q>(),
     currentRequest: deferred<T>(),
@@ -193,8 +193,8 @@ export const keyResolver =
   <T extends ReadonlyArray<any>, Q, R = T extends ReadonlyArray<infer A> ? A : never>(
     key: T extends ReadonlyArray<infer A> ? keyof A : never
   ) =>
-  (items: T, query: Q): R =>
-    items.find((item) => item[key] == query) ?? null;
+    (items: T, query: Q): R =>
+      items.find((item) => item[key] === query) ?? null;
 
 /**
  * Resolve by record index when response is an object.
@@ -204,8 +204,8 @@ export const keyResolver =
  */
 export const indexedResolver =
   <T extends Record<any, any>, Q>() =>
-  (itemsIndex: T, query: Q) =>
-    itemsIndex[query] ?? null;
+    (itemsIndex: T, query: Q) =>
+      itemsIndex[query] ?? null;
 
 /**
  * Give a window in ms where all queued fetched made within the window will be batched into
@@ -241,11 +241,11 @@ export const windowedFiniteBatchScheduler: (config: {
   maxBatchSize: number;
 }) => BatcherScheduler =
   ({ windowMs, maxBatchSize }) =>
-  (start, latest, batchSize) => {
-    if (batchSize >= maxBatchSize) return "immediate";
-    const spent = latest - start;
-    return windowMs - spent;
-  };
+    (start, latest, batchSize) => {
+      if (batchSize >= maxBatchSize) return "immediate";
+      const spent = latest - start;
+      return windowMs - spent;
+    };
 
 /**
  * Will batch calls when the max batch size is reached.
@@ -257,7 +257,7 @@ export const maxBatchSizeScheduler: (config: {
   maxBatchSize: number;
 }) => BatcherScheduler =
   ({ maxBatchSize }) =>
-  (_start, _latest, batchSize) => {
-    if (batchSize >= maxBatchSize) return "immediate";
-    return "never";
-  };
+    (_start, _latest, batchSize) => {
+      if (batchSize >= maxBatchSize) return "immediate";
+      return "never";
+    };
