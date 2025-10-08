@@ -166,6 +166,21 @@ const tests = () => {
     ]);
   });
 
+  test("key resolver", async () => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
+        return mock.usersByIds(ids.filter((id) => id !== 2));
+      },
+      resolver: keyResolver("id"),
+    });
+
+    const two = await batcher.fetch(2);
+    expect(two).toBeNull();
+
+    const three = await batcher.fetch(3);
+    expect(three).toEqual({ id: 3, name: "Sally" });
+  });
+
   test("custom resolver", async () => {
     let fetchCounter = 0;
     const batcher = create({
