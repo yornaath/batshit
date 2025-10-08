@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.11.0
+
+### Minor Changes
+
+- Key resolver can now return null
+
 ## 0.10.1
 
 ### Patch Changes
