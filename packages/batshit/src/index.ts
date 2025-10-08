@@ -187,13 +187,13 @@ export const create = <T, Q, R = T>(
  * Create a euquality check to check if the query matches a given key on the item data.
  *
  * @param key keyof T
- * @returns (item:T extends Array<A>, query: Q) => A
+ * @returns (item:T extends Array<A>, query: Q) => A | null
  */
 export const keyResolver =
   <T extends ReadonlyArray<any>, Q, R = T extends ReadonlyArray<infer A> ? A : never>(
     key: T extends ReadonlyArray<infer A> ? keyof A : never
   ) =>
-    (items: T, query: Q): R =>
+    (items: T, query: Q): R | null =>
       items.find((item) => item[key] === query) ?? null;
 
 /**
