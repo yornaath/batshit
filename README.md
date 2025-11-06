@@ -238,7 +238,7 @@ const [alicesPosts, bobsPost] = await Promise.all([
 
 If your batches are big arrays( > 30K items) and you use the keyresolver it can give you a performance boost to turn on indexing.
 
-__Any less than 30K items per batch and the performance gain is negligeble__
+__Any less than 30K items per batch and the performance gain is negligeble. But anywhere above 15K can be worth it.__
 
 ```ts
 const batcherIndexed = create({
