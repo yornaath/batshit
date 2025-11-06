@@ -241,6 +241,7 @@ If your batches are big arrays( > 5-10K items) and you use the keyresolver it ca
 ```ts
 const batcherIndexed = create({
   fetcher: async (ids: number[]) => {
+    // returns > 5-10K items[]
     return mock.bigUserById(ids);
   },
   resolver: keyResolver("id", { indexed: true }),
