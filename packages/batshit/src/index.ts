@@ -46,12 +46,17 @@ export type BatcherConfig<T, Q, R> = {
    * @param query Q
    * @returns string
    */
-  resolver: (items: T, query: Q) => R;
+  resolver: Resolver<T, Q, R>;
   /**
    * Display name of the batcher. Used for debugging and devtools.
    */
   name?: string;
 };
+
+export type Resolver<T, Q, R> = {
+  (items: T, query: Q): R
+  index?: Record<string, R>;
+}
 
 /**
  * A function to schedule batch execution timing
@@ -191,10 +196,32 @@ export const create = <T, Q, R = T>(
  */
 export const keyResolver =
   <T extends ReadonlyArray<any>, Q, R = T extends ReadonlyArray<infer A> ? A : never>(
-    key: T extends ReadonlyArray<infer A> ? keyof A : never
-  ) =>
-    (items: T, query: Q): R | null =>
-      items.find((item) => item[key] === query) ?? null;
+    key: T extends ReadonlyArray<infer A> ? keyof A : never,
+    config?: {
+      indexed?: boolean
+    }
+  ): Resolver<T, Q, R> => {
+    const isIndexex = config?.indexed
+
+    const resolver: Resolver<T, Q, R> = (items: T, query: Q): R => {
+      if (isIndexex) {
+        if (!resolver.index) {
+          resolver.index = {};
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            const indexHash = item[key] as unknown as string;
+            resolver.index[indexHash] = item;
+          }
+        }
+
+        return (resolver.index[query as unknown as string] as R);
+      }
+
+      return items.find((item) => item[key] === query) ?? null
+    }
+
+    return resolver
+  }
 
 /**
  * Resolve by record index when response is an object.

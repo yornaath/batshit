@@ -36,6 +36,35 @@ const tests = () => {
     expect(all).toEqual(mock.users);
   });
 
+  test("un-indexed test", async () => {
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
+        return mock.bigUserById(ids);
+      },
+      resolver: keyResolver("id"),
+      scheduler: windowScheduler(1000),
+    });
+
+    console.time("unindexed")
+    await Promise.all(range(mock.BIG_USER_LIST_LENGTH).map((i) => batcher.fetch(i)));
+    console.timeEnd("unindexed")
+
+  });
+
+  test("indexed test", async () => {
+    const batcherIndexed = create({
+      fetcher: async (ids: number[]) => {
+        return mock.bigUserById(ids);
+      },
+      resolver: keyResolver("id", { indexed: true }),
+      scheduler: windowScheduler(1000),
+    });
+
+    console.time("indexed")
+    await Promise.all(range(mock.BIG_USER_LIST_LENGTH).map((i) => batcherIndexed.fetch(i)));
+    console.timeEnd("indexed")
+  });
+
   test("fetching items be batched in the same time window", async () => {
     let fetchCounter = 0;
 
@@ -509,7 +538,10 @@ const tests = () => {
 };
 
 describe("batcher", tests);
-describe("batcher-with-devtools", () => {
-  injectDevtools(() => {});
-  return tests();
-});
+// describe("batcher-with-devtools", () => {
+//   injectDevtools(() => { });
+//   return tests();
+// });
+
+
+const range = (n: number) => Array.from({ length: n }, (_, i) => i + 1);

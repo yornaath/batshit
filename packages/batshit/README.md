@@ -234,6 +234,20 @@ const [alicesPosts, bobsPost] = await Promise.all([
 ]);
 ```
 
+# Indexed Keyresolver Performance
+
+If your batches are big arrays( > 5-10K items) and you use the keyresolver it can give you a performance boost to turn on indexing.
+
+```ts
+const batcherIndexed = create({
+  fetcher: async (ids: number[]) => {
+    return mock.bigUserById(ids);
+  },
+  resolver: keyResolver("id", { indexed: true }),
+  scheduler: windowScheduler(1000),
+});
+```
+
 # React Devtools
 
 Tools to debug and inspect the batching process can be found in the [@yornaath/batshit-devtools-react](https://www.npmjs.com/package/@yornaath/batshit-devtools-react) package.

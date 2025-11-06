@@ -28,13 +28,24 @@ export const posts: Post[] = [
 ];
 
 export const usersByIds = async (ids: number[]) => {
-  await setTimeout(5);
-  return Object.values(users).filter((item) => ids.includes(item.id));
+  return users.filter((item) => ids.includes(item.id));
 };
 
 export const postsByAuthorId = async (authorIds: number[]) => {
-  await setTimeout(5);
   return Object.values(posts).filter((item) =>
     authorIds.includes(item.authorId)
   );
+};
+
+
+export let bigUserList: User[] = [];
+
+export const BIG_USER_LIST_LENGTH = 5000;
+
+for (let i = 1; i <= BIG_USER_LIST_LENGTH; i++) {
+  bigUserList.push({ id: i, name: `User ${i}` });
+}
+
+export const bigUserById = async (ids: number[]) => {
+  return bigUserList.filter((item) => ids.includes(item.id));
 };
