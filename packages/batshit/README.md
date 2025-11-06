@@ -236,11 +236,14 @@ const [alicesPosts, bobsPost] = await Promise.all([
 
 # Indexed Keyresolver Performance
 
-If your batches are big arrays( > 5-10K items) and you use the keyresolver it can give you a performance boost to turn on indexing.
+If your batches are big arrays( > 30K items) and you use the keyresolver it can give you a performance boost to turn on indexing.
+
+__Any less than 30K items per batch and the performance gain is negligeble__
 
 ```ts
 const batcherIndexed = create({
   fetcher: async (ids: number[]) => {
+    // returns > 30K items[]
     return mock.bigUserById(ids);
   },
   resolver: keyResolver("id", { indexed: true }),
