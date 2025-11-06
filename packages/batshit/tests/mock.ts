@@ -40,7 +40,7 @@ export const postsByAuthorId = async (authorIds: number[]) => {
 
 export let bigUserList: User[] = [];
 
-export const BIG_USER_LIST_LENGTH = 20000;
+export const BIG_USER_LIST_LENGTH = 30000;
 
 for (let i = 1; i <= BIG_USER_LIST_LENGTH; i++) {
   bigUserList.push({ id: i, name: `User ${i}` });
