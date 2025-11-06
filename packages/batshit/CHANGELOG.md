@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.11.2
+
+### Patch Changes
+
+- Added optional indexing to the key resolver
+
 ## 0.11.1
 
 ### Patch Changes
