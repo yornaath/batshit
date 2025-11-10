@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.12.0
+
+### Minor Changes
+
+- Added batcher.abort() and sending the AbortSignal to the fetcher function.
+
 ## 0.11.3
 
 ### Patch Changes
