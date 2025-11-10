@@ -234,6 +234,27 @@ const [alicesPosts, bobsPost] = await Promise.all([
 ]);
 ```
 
+# batcher.next() - Early Execution
+
+Calling batcher.next() will execute the current batch early even if the scheduler hasnt finished.
+
+
+```ts
+const batcher = create({
+  fetcher: async (ids: number[]) => {
+    return mock.usersByIds(ids);
+  },
+  resolver: keyResolver("id"),
+  scheduler: windowScheduler(33),
+});
+
+let all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+
+bacher.next()
+
+const users = await all //current batch of users [1,2,3,4] will be fetched immediately
+```
+
 # Indexed Keyresolver Performance
 
 If your batches are big arrays( > 30K items) and you use the keyresolver it can give you a performance boost to turn on indexing.

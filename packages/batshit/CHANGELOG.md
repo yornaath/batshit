@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.11.3
+
+### Patch Changes
+
+- Added batcher.next() method for early batch execution
+
 ## 0.11.2
 
 ### Patch Changes

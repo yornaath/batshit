@@ -18,6 +18,13 @@ export type Batcher<T, Q, R = T> = {
    * @returns Promise<T>
    */
   fetch: (query: Q) => Promise<R>;
+
+  /**
+   * Execute the next batch.
+   * This is useful to manually execute the next batch when the scheduler is not immediate.
+   * @returns void
+   */
+  next: () => void;
 };
 
 /**
@@ -126,6 +133,30 @@ export const create = <T, Q, R = T>(
     mem.latest = null;
   };
 
+  const fetchBatch = () => {
+    const currentSeq = mem.seq;
+    const req = config.fetcher([...mem.batch]);
+    const currentRequest = mem.currentRequest;
+
+    devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
+
+    nextBatch();
+
+    req
+      .then((data) => {
+        devtools?.data({ seq: currentSeq, data });
+        currentRequest.resolve(data);
+      })
+      .catch((error) => {
+        devtools?.error({ seq: currentSeq, error });
+        currentRequest.reject(error);
+      });
+
+    mem.seq++;
+
+    return req;
+  };
+
   const fetch = (query: Q): Promise<R> => {
     if (!mem.start) mem.start = Date.now();
     mem.latest = Date.now();
@@ -144,30 +175,6 @@ export const create = <T, Q, R = T>(
       start: mem.start,
     });
 
-    const fetchBatch = () => {
-      const currentSeq = mem.seq;
-      const req = config.fetcher([...mem.batch]);
-      const currentRequest = mem.currentRequest;
-
-      devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
-
-      nextBatch();
-
-      req
-        .then((data) => {
-          devtools?.data({ seq: currentSeq, data });
-          currentRequest.resolve(data);
-        })
-        .catch((error) => {
-          devtools?.error({ seq: currentSeq, error });
-          currentRequest.reject(error);
-        });
-
-      mem.seq++;
-
-      return req;
-    };
-
     if (scheduled === "immediate") {
       const req = mem.currentRequest;
       fetchBatch();
@@ -184,7 +191,11 @@ export const create = <T, Q, R = T>(
     }
   };
 
-  return { fetch };
+  const next = () => {
+    fetchBatch();
+  };
+
+  return { fetch, next };
 };
 
 /**

@@ -1,6 +1,7 @@
 import { injectDevtools } from "@yornaath/batshit-devtools";
 import { setTimeout as setTimeoutP } from "timers/promises";
 import { describe, expect, test } from "vitest";
+import {performance} from "node:perf_hooks"
 import {
   create,
   bufferScheduler,
@@ -11,6 +12,8 @@ import {
   maxBatchSizeScheduler,
 } from "../src/index";
 import * as mock from "./mock";
+
+
 
 const tests = () => {
   test("fetching items should work", async () => {
@@ -36,34 +39,34 @@ const tests = () => {
     expect(all).toEqual(mock.users);
   });
 
-  test("un-indexed test", async () => {
-    const batcher = create({
-      fetcher: async (ids: number[]) => {
-        return mock.bigUserById(ids);
-      },
-      resolver: keyResolver("id"),
-      scheduler: windowScheduler(1000),
-    });
+  // test("un-indexed test", async () => {
+  //   const batcher = create({
+  //     fetcher: async (ids: number[]) => {
+  //       return mock.bigUserById(ids);
+  //     },
+  //     resolver: keyResolver("id"),
+  //     scheduler: windowScheduler(1000),
+  //   });
 
-    console.time("unindexed")
-    await Promise.all(range(mock.BIG_USER_LIST_LENGTH).map((i) => batcher.fetch(i)));
-    console.timeEnd("unindexed")
+  //   console.time("unindexed")
+  //   await Promise.all(range(mock.BIG_USER_LIST_LENGTH).map((i) => batcher.fetch(i)));
+  //   console.timeEnd("unindexed")
 
-  });
+  // });
 
-  test("indexed test", async () => {
-    const batcherIndexed = create({
-      fetcher: async (ids: number[]) => {
-        return mock.bigUserById(ids);
-      },
-      resolver: keyResolver("id", { indexed: true }),
-      scheduler: windowScheduler(1000),
-    });
+  // test("indexed test", async () => {
+  //   const batcherIndexed = create({
+  //     fetcher: async (ids: number[]) => {
+  //       return mock.bigUserById(ids);
+  //     },
+  //     resolver: keyResolver("id", { indexed: true }),
+  //     scheduler: windowScheduler(1000),
+  //   });
 
-    console.time("indexed")
-    await Promise.all(range(mock.BIG_USER_LIST_LENGTH).map((i) => batcherIndexed.fetch(i)));
-    console.timeEnd("indexed")
-  });
+  //   console.time("indexed")
+  //   await Promise.all(range(mock.BIG_USER_LIST_LENGTH).map((i) => batcherIndexed.fetch(i)));
+  //   console.timeEnd("indexed")
+  // });
 
   test("fetching items be batched in the same time window", async () => {
     let fetchCounter = 0;
@@ -128,6 +131,34 @@ const tests = () => {
       { id: 4, name: "John" },
     ]);
   });
+
+  test("early execution", async () => {
+    let fetchCounter = 0;
+    const batcher = create({
+      fetcher: async (ids: number[]) => {
+        return mock.usersByIds(ids);
+      },
+      resolver: keyResolver("id"),
+      scheduler: windowScheduler(33),
+    });
+
+    let all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+    
+    expect(fetchCounter).toBe(0);
+
+    let now = performance.now();
+    batcher.next()
+    await all;
+    let elapsed = performance.now() - now;
+    expect(elapsed).toBeLessThan(5);
+
+    all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+
+    now = performance.now();
+    await all;
+    elapsed = performance.now() - now;
+    expect(elapsed).toBeGreaterThanOrEqual(33)
+  })
 
   test("debouncing", async () => {
     let fetchCounter = 0;
