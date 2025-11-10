@@ -164,6 +164,35 @@ const tests = () => {
     expect(fetchCounter).toBe(2);
   })
 
+  test("aborting", async () => {
+    const batcher = create({
+      fetcher: async (ids: number[], abortSignal: AbortSignal) => {
+        return mock.usersByIdsAsync(ids, 30, abortSignal);
+      },
+      resolver: keyResolver("id"),
+    });
+
+    const all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+
+    setTimeout(() => {
+      batcher.abort();
+    }, 5)
+    
+    const error = await all.catch((error) => error);
+
+    expect(error).toBeInstanceOf(DOMException);
+    expect(error.message).toBe("Aborted");
+
+    const batch2 = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+
+    expect(await batch2).toEqual([
+      { id: 1, name: "Bob" },
+      { id: 2, name: "Alice" },
+      { id: 3, name: "Sally" },
+      { id: 4, name: "John" },
+    ]);
+  })
+
   test("debouncing", async () => {
     let fetchCounter = 0;
     const batcher = create({

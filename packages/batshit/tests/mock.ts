@@ -31,6 +31,14 @@ export const usersByIds = async (ids: number[]) => {
   return users.filter((item) => ids.includes(item.id));
 };
 
+export const usersByIdsAsync = async (ids: number[], delay: number, abortSignal: AbortSignal) => {
+  await setTimeout(delay);
+  if (abortSignal.aborted) {
+    throw new Error("Aborted");
+  }
+  return users.filter((item) => ids.includes(item.id));
+};
+
 export const postsByAuthorId = async (authorIds: number[]) => {
   return Object.values(posts).filter((item) =>
     authorIds.includes(item.authorId)

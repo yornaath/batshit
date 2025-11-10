@@ -25,6 +25,12 @@ export type Batcher<T, Q, R = T> = {
    * @returns void
    */
   next: () => void;
+
+  /**
+   * Abort the current batch.
+   * @returns void
+   */
+  abort: () => void;
 };
 
 /**
@@ -41,7 +47,7 @@ export type BatcherConfig<T, Q, R> = {
    * @param queries Q[]
    * @returns Promise<T
    */
-  fetcher: (queries: Q[]) => Promise<T>;
+  fetcher: (queries: Q[], abortSignal: AbortSignal) => Promise<T>;
   /**
    * The scheduling function.
    */
@@ -91,6 +97,7 @@ export type BatcherMemory<T, Q> = {
   timer?: NodeJS.Timeout | undefined;
   start?: number | null;
   latest?: number | null;
+  abortController: AbortController;
 };
 
 /**
@@ -121,6 +128,7 @@ export const create = <T, Q, R = T>(
     timer: undefined,
     start: null,
     latest: null,
+    abortController: new AbortController(),
   };
 
   devtools?.create({ seq: mem.seq });
@@ -131,11 +139,13 @@ export const create = <T, Q, R = T>(
     mem.timer = undefined;
     mem.start = null;
     mem.latest = null;
+    mem.abortController = new AbortController();
   };
 
   const fetchBatch = () => {
     const currentSeq = mem.seq;
-    const req = config.fetcher([...mem.batch]);
+    
+    const req = config.fetcher([...mem.batch], mem.abortController.signal);
     const currentRequest = mem.currentRequest;
 
     devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
@@ -195,7 +205,13 @@ export const create = <T, Q, R = T>(
     fetchBatch();
   };
 
-  return { fetch, next };
+  const abort = () => {
+    mem.abortController.abort();
+    mem.currentRequest.reject(new DOMException("Aborted", "AbortError"));
+    nextBatch()
+  };
+
+  return { fetch, next, abort };
 };
 
 /**
