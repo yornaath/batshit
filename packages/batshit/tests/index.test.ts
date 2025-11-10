@@ -136,6 +136,7 @@ const tests = () => {
     let fetchCounter = 0;
     const batcher = create({
       fetcher: async (ids: number[]) => {
+        fetchCounter++
         return mock.usersByIds(ids);
       },
       resolver: keyResolver("id"),
@@ -152,12 +153,15 @@ const tests = () => {
     let elapsed = performance.now() - now;
     expect(elapsed).toBeLessThan(5);
 
-    all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+    expect(fetchCounter).toBe(1);
 
+    
     now = performance.now();
+    all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
     await all;
     elapsed = performance.now() - now;
     expect(elapsed).toBeGreaterThanOrEqual(30)
+    expect(fetchCounter).toBe(2);
   })
 
   test("debouncing", async () => {
