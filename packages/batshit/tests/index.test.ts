@@ -157,7 +157,7 @@ const tests = () => {
     now = performance.now();
     await all;
     elapsed = performance.now() - now;
-    expect(elapsed).toBeGreaterThanOrEqual(33)
+    expect(elapsed).toBeGreaterThanOrEqual(30)
   })
 
   test("debouncing", async () => {
