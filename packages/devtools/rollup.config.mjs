@@ -1,7 +1,9 @@
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
+import { pathToFileURL } from "url";
+import { join } from "path";
 
-const pkg = await import(`${process.cwd()}/package.json`, {
+const pkg = await import(pathToFileURL(join(process.cwd(), "package.json")).href, {
 	with: { type: "json" },
 });
 

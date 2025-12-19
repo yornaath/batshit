@@ -25,6 +25,7 @@
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-typescript": "^10.0.1",
     "@vitest/coverage-c8": "^0.26.2",
+    "rimraf": "^6.1.0",
     "rollup": "^3.8.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "tslib": "^2.4.1",

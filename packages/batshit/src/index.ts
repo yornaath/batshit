@@ -24,7 +24,7 @@ export type Batcher<T, Q, R = T> = {
    * This is useful to manually execute the next batch when the scheduler is not immediate.
    * @returns void
    */
-  next: () => void;
+  next: () => Promise<T>;
 
   /**
    * Abort the current batch.
@@ -202,7 +202,7 @@ export const create = <T, Q, R = T>(
   };
 
   const next = () => {
-    fetchBatch();
+    return fetchBatch();
   };
 
   const abort = () => {
