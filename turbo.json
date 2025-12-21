@@ -16,6 +16,10 @@
         "./dist/**"
       ]
     },
+    "test:watch": {
+      "persistent": true,
+      "cache": false
+    },
     "lint": {
       "outputs": []
     }

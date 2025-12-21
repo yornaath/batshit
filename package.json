@@ -16,6 +16,7 @@
   "packageManager": "yarn@3.3.1",
   "scripts": {
     "test": "turbo test",
+    "test:watch": "turbo test:watch",
     "coverage": "turbo coverage",
     "build": "turbo build",
     "build-example": "turbo build && turbo build-example"

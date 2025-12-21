@@ -1,4 +1,5 @@
-import { setTimeout } from "node:timers/promises";
+
+import { deferred } from "../dist/deferred";
 export type User = {
   id: number;
   name: string;
@@ -31,12 +32,30 @@ export const usersByIds = async (ids: number[]) => {
   return users.filter((item) => ids.includes(item.id));
 };
 
-export const usersByIdsAsync = async (ids: number[], delay: number, abortSignal: AbortSignal) => {
-  await setTimeout(delay);
-  if (abortSignal.aborted) {
-    throw new Error("Aborted");
-  }
-  return users.filter((item) => ids.includes(item.id));
+export const usersByIdsAsync = async (ids: number[], delay: number, abortSignal: AbortSignal): Promise<User[]> => {
+  return new Promise((resolve, reject) => {
+    if (abortSignal?.aborted) {
+      reject(new DOMException("Aborted", "AbortError"));
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      cleanup();
+      resolve(users.filter((item) => ids.includes(item.id)));
+    }, delay);
+
+    const onAbort = () => {
+      clearTimeout(timer);
+      cleanup();
+      reject(new DOMException("Aborted", "AbortError"));
+    };
+
+    const cleanup = () => {
+      abortSignal?.removeEventListener("abort", onAbort);
+    };
+
+    abortSignal?.addEventListener("abort", onAbort);
+  });
 };
 
 export const postsByAuthorId = async (authorIds: number[]) => {

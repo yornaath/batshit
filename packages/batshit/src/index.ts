@@ -48,10 +48,12 @@ export type BatcherConfig<T, Q, R> = {
    * @returns Promise<T
    */
   fetcher: (queries: Q[], abortSignal: AbortSignal) => Promise<T>;
+
   /**
    * The scheduling function.
    */
   scheduler?: BatcherScheduler;
+  
   /**
    * Correlate an item by its query. Used to extract the correct value from the batch of items
    * to the correct query used to fetch it.
@@ -60,6 +62,7 @@ export type BatcherConfig<T, Q, R> = {
    * @returns string
    */
   resolver: Resolver<T, Q, R>;
+  
   /**
    * Display name of the batcher. Used for debugging and devtools.
    */
@@ -88,17 +91,27 @@ export type BatcherScheduler = {
 /**
  * A schedule for when to execute a batched fetch call.
  */
-export type Schedule = number | "immediate" | "never";
+export type Schedule =
+  | number
+  | "immediate"
+  | "never"
 
-export type BatcherMemory<T, Q> = {
+export type Batch<T, Q> = {
   seq: number;
+  state: BatchState,
   batch: Set<Q>;
-  currentRequest: Deferred<T>;
+  request: Deferred<T>;
   timer?: NodeJS.Timeout | undefined;
   start?: number | null;
   latest?: number | null;
   abortController: AbortController;
 };
+
+export type BatchState =
+  | "idle"
+  | "in-transit"
+  | "complete"
+  | "error"
 
 /**
  * Create a batch manager for a given collection of a data type.
@@ -111,8 +124,7 @@ export type BatcherMemory<T, Q> = {
  * @returns Batcher<T, Q>
  */
 export const create = <T, Q, R = T>(
-  config: BatcherConfig<T, Q, R>,
-  memory?: BatcherMemory<T, Q>
+  config: BatcherConfig<T, Q, R>
 ): Batcher<T, Q, ReturnType<(typeof config)["resolver"]>> => {
   const name = config.name ?? `batcher:${Math.random().toString(16).slice(2)})`;
 
@@ -121,81 +133,101 @@ export const create = <T, Q, R = T>(
   const devtools: DevtoolsListener<any, any> | undefined =
     globalThis.__BATSHIT_DEVTOOLS__?.for(name);
 
-  const mem: BatcherMemory<T, Q> = memory ?? {
-    seq: 0,
-    batch: new Set<Q>(),
-    currentRequest: deferred<T>(),
-    timer: undefined,
-    start: null,
-    latest: null,
-    abortController: new AbortController(),
-  };
+  let seq = 0;
 
-  devtools?.create({ seq: mem.seq });
+  let queue: Array<Batch<T, Q>> = [
+    {
+      seq,
+      state: "idle",
+      batch: new Set<Q>(),
+      request: deferred<T>(),
+      timer: undefined,
+      start: null,
+      latest: null,
+      abortController: new AbortController(),
+    }
+  ]
+
+  let current: Batch<T, Q> = queue[0]
+
+  devtools?.create({ seq: current.seq });
 
   const nextBatch = () => {
-    mem.batch = new Set();
-    mem.currentRequest = deferred<T>();
-    mem.timer = undefined;
-    mem.start = null;
-    mem.latest = null;
-    mem.abortController = new AbortController();
+    current = {
+      seq: seq + 1,
+      state: "idle",
+      batch: new Set<Q>(),
+      request: deferred<T>(),
+      timer: undefined,
+      start: null,
+      latest: null,
+      abortController: new AbortController(),
+    }
+    queue.push(current)
   };
 
   const fetchBatch = () => {
-    const currentSeq = mem.seq;
-    
-    const req = config.fetcher([...mem.batch], mem.abortController.signal);
-    const currentRequest = mem.currentRequest;
+    current.state = "in-transit"
+    const currentSeq = current.seq;
 
-    devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
+    const req = config.fetcher([...current.batch], current.abortController.signal);
+    const currentRequest = current.request;
+
+    devtools?.fetch({ seq: currentSeq, batch: [...current.batch] });
 
     nextBatch();
 
     req
       .then((data) => {
+        current.state = "complete"
         devtools?.data({ seq: currentSeq, data });
         currentRequest.resolve(data);
       })
       .catch((error) => {
+        current.state = "error"
         devtools?.error({ seq: currentSeq, error });
         currentRequest.reject(error);
+      })
+      .finally(() => {
+        setTimeout(scheduleCleanup)
       });
-
-    mem.seq++;
 
     return req;
   };
 
-  const fetch = (query: Q): Promise<R> => {
-    if (!mem.start) mem.start = Date.now();
-    mem.latest = Date.now();
+  const scheduleCleanup = () => {
+    queue = queue.filter(batch => batch.state === "idle" || batch.state === "in-transit")
+  }
 
-    mem.batch.add(query);
-    clearTimeout(mem.timer);
+  const fetch = async (query: Q): Promise<R> => {
+    if (!current.start) current.start = Date.now();
+    current.latest = Date.now();
 
-    const scheduled = scheduler(mem.start, mem.latest, mem.batch.size);
+    current.batch.add(query);
+    clearTimeout(current.timer);
+
+    const scheduled = scheduler(current.start, current.latest, current.batch.size);
 
     devtools?.queue({
-      seq: mem.seq,
+      seq: current.seq,
       query,
-      batch: [...mem.batch],
+      batch: [...current.batch],
       scheduled,
-      latest: mem.latest,
-      start: mem.start,
+      latest: current.latest,
+      start: current.start,
     });
 
     if (scheduled === "immediate") {
-      const req = mem.currentRequest;
+      const req = current.request;
       fetchBatch();
       return req.value.then((items) => config.resolver(items, query));
     } else if (scheduled === "never") {
-      return mem.currentRequest.value.then((items) =>
+      return current.request.value.then((items) =>
         config.resolver(items, query)
       );
     } else {
-      mem.timer = setTimeout(fetchBatch, scheduled);
-      return mem.currentRequest.value.then((items) =>
+      current.timer = setTimeout(fetchBatch, scheduled);
+      return current.request.value.then((items) =>
         config.resolver(items, query)
       );
     }
@@ -206,9 +238,20 @@ export const create = <T, Q, R = T>(
   };
 
   const abort = () => {
-    mem.abortController.abort();
-    mem.currentRequest.reject(new DOMException("Aborted", "AbortError"));
-    nextBatch()
+    const head = queue.pop()
+
+    if(head && head.state === "in-transit") {
+      head.abortController.abort();
+      head.request.reject(new DOMException("Aborted", "AbortError"))
+      nextBatch()
+    }
+
+    for(const batch of queue) {
+      if(batch.state === "in-transit") {
+        batch.abortController.abort();
+        batch.request.reject(new DOMException("Aborted", "AbortError"))
+      }
+    }
   };
 
   return { fetch, next, abort };

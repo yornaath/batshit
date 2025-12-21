@@ -35,6 +35,7 @@
   },
   "scripts": {
     "test": "vitest run",
+    "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "build": "rimraf ./dist && rollup -c && tsc"
   }

@@ -165,18 +165,21 @@ const tests = () => {
   })
 
   test("aborting", async () => {
+    let fetchCount = 0
     const batcher = create({
       fetcher: async (ids: number[], abortSignal: AbortSignal) => {
-        return mock.usersByIdsAsync(ids, 30, abortSignal);
+        fetchCount++
+        return mock.usersByIdsAsync(ids, 50, abortSignal);
       },
       resolver: keyResolver("id"),
+      scheduler: windowScheduler(50),
     });
 
     const all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
 
     setTimeout(() => {
       batcher.abort();
-    }, 5)
+    }, 75)
     
     const error = await all.catch((error) => error);
 
@@ -193,6 +196,17 @@ const tests = () => {
     ]);
   })
 
+  test("aborting old batch", async () =>{
+    let fetchCount = 0
+    const batcher = create({
+      fetcher: async (ids: number[], abortSignal: AbortSignal) => {
+        fetchCount++
+        return mock.usersByIdsAsync(ids, 42, abortSignal);
+      },
+      resolver: keyResolver("id"),
+    });
+  })
+
   test("debouncing", async () => {
     let fetchCounter = 0;
     const batcher = create({
@@ -201,7 +215,7 @@ const tests = () => {
         return mock.usersByIds(ids);
       },
       resolver: keyResolver("id"),
-      scheduler: bufferScheduler(10),
+      scheduler: bufferScheduler(30),
     });
 
     const one = batcher.fetch(1);
