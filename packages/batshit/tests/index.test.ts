@@ -194,17 +194,55 @@ const tests = () => {
       { id: 3, name: "Sally" },
       { id: 4, name: "John" },
     ]);
+    expect(fetchCount).toEqual(2)
   })
 
-  test("aborting old batch", async () =>{
+  test("aborting idle", async () => {
     let fetchCount = 0
     const batcher = create({
       fetcher: async (ids: number[], abortSignal: AbortSignal) => {
         fetchCount++
-        return mock.usersByIdsAsync(ids, 42, abortSignal);
+        return mock.usersByIdsAsync(ids, 100, abortSignal);
       },
       resolver: keyResolver("id"),
+      scheduler: windowScheduler(100),
     });
+
+    const all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+
+    setTimeout(async () => {
+      batcher.abort();
+    }, 25)
+    
+    const error = await all.catch((error) => error);
+
+    expect(error).toBeInstanceOf(DOMException);
+    expect(fetchCount).toEqual(0)
+  })
+
+  test("aborting empty idle", async () => {
+    let fetchCount = 0
+    const batcher = create({
+      fetcher: async (ids: number[], abortSignal: AbortSignal) => {
+        fetchCount++
+        return mock.usersByIdsAsync(ids, 100, abortSignal);
+      },
+      resolver: keyResolver("id"),
+      scheduler: windowScheduler(33),
+    });
+
+    batcher.abort();
+
+    const all = Promise.all([batcher.fetch(1), batcher.fetch(2), batcher.fetch(3), batcher.fetch(4)]);
+
+    expect(await all).toEqual([
+      { id: 1, name: "Bob" },
+      { id: 2, name: "Alice" },
+      { id: 3, name: "Sally" },
+      { id: 4, name: "John" },
+    ]);
+
+    expect(fetchCount).toEqual(1)
   })
 
   test("debouncing", async () => {

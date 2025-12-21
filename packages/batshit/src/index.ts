@@ -96,23 +96,36 @@ export type Schedule =
   | "immediate"
   | "never"
 
-export type Batch<T, Q> = {
-  seq: number;
-  state: BatchState,
-  batch: Set<Q>;
-  request: Deferred<T>;
-  timer?: NodeJS.Timeout | undefined;
-  start?: number | null;
-  latest?: number | null;
-  abortController: AbortController;
-};
-
-export type BatchState =
-  | "idle"
-  | "in-transit"
-  | "complete"
-  | "error"
-
+  export type Batch<T, Q> = {
+    seq: number;
+    state: (
+      | "idle"
+      | "in-transit"
+      | "aborted"
+      | "complete"
+      | "error"
+    ),
+    batch: Set<Q>;
+    request: Deferred<T>;
+    timer?: NodeJS.Timeout | undefined;
+    start?: number | null;
+    latest?: number | null;
+    abortController: AbortController;
+  };
+  
+  const Batch = {
+    create: <T, Q>(seq: number): Batch<T,Q> => ({
+      seq: seq + 1,
+      state: "idle",
+      batch: new Set<Q>(),
+      request: deferred<T>(),
+      timer: undefined,
+      start: null,
+      latest: null,
+      abortController: new AbortController(),
+    })
+  }
+  
 /**
  * Create a batch manager for a given collection of a data type.
  * Will batch all .get calls given inside a scheduled time window into a singel request.
@@ -136,16 +149,7 @@ export const create = <T, Q, R = T>(
   let seq = 0;
 
   let queue: Array<Batch<T, Q>> = [
-    {
-      seq,
-      state: "idle",
-      batch: new Set<Q>(),
-      request: deferred<T>(),
-      timer: undefined,
-      start: null,
-      latest: null,
-      abortController: new AbortController(),
-    }
+    Batch.create(seq)
   ]
 
   let current: Batch<T, Q> = queue[0]
@@ -153,16 +157,7 @@ export const create = <T, Q, R = T>(
   devtools?.create({ seq: current.seq });
 
   const nextBatch = () => {
-    current = {
-      seq: seq + 1,
-      state: "idle",
-      batch: new Set<Q>(),
-      request: deferred<T>(),
-      timer: undefined,
-      start: null,
-      latest: null,
-      abortController: new AbortController(),
-    }
+    current = Batch.create(seq + 1)
     queue.push(current)
   };
 
@@ -241,13 +236,23 @@ export const create = <T, Q, R = T>(
     const head = queue.pop()
 
     if(head && head.state === "in-transit") {
+      head.state = "aborted"
       head.abortController.abort();
       head.request.reject(new DOMException("Aborted", "AbortError"))
       nextBatch()
     }
 
+    if(head && head.state === "idle") {
+      if(head.batch.size > 0) {
+        head.request.reject(new DOMException("Aborted", "AbortError"))
+      }
+      
+      nextBatch()
+    }
+
     for(const batch of queue) {
       if(batch.state === "in-transit") {
+        batch.state = "aborted"
         batch.abortController.abort();
         batch.request.reject(new DOMException("Aborted", "AbortError"))
       }

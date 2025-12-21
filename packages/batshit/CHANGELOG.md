@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.14.0
+
+### Minor Changes
+
+- Fix aborting
+
 ## 0.13.0
 
 ### Minor Changes
