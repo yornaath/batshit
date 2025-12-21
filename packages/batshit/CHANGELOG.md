@@ -1,5 +1,11 @@
 # @yornaath/batshit
 
+## 0.13.0
+
+### Minor Changes
+
+- Fixed abort so it aborts all in transit batches.
+
 ## 0.12.0
 
 ### Minor Changes
